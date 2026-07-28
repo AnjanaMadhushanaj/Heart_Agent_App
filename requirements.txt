@@ -1,0 +1,9 @@
+crewai
+crewai-tools
+langchain-openai
+langchain-groq
+chromadb
+streamlit
+pandas
+scikit-learn
+python-dotenv
