@@ -366,10 +366,6 @@ with col_left:
 with col_right:
     st.markdown("""
     <div class="dashboard-card">
-        <div class="card-header-row">
-            <div class="card-title">Patient Vitals Analysis</div>
-            <div class="status-pill">Ready</div>
-        </div>
     """, unsafe_allow_html=True)
     
     input_col1, input_col2 = st.columns(2)
