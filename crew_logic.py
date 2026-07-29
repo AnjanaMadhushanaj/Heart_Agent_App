@@ -19,23 +19,33 @@ reporting_task = Task(
     description=(
         "Using the patient's clinical inputs (Cholesterol: {chol} mg/dL, Max Heart Rate: {thalach} bpm) and "
         "the diagnostic risk assessment from the Diagnostic Agent, retrieve relevant clinical guidelines "
-        "using the 'Medical Guidelines Retriever' tool. Synthesize these inputs into a drafted medical report. "
-        "The report must be exactly two paragraphs, written in simple, empathetic English, translating the raw risk "
-        "into patient-friendly explanations, reassurance, and actionable lifestyle recommendations."
+        "using the 'Medical Guidelines Retriever' tool. Synthesize these inputs into a structured, highly professional, "
+        "and patient-friendly medical report.\n\n"
+        "Format the report clearly using markdown with the following structure:\n"
+        "### 🏥 Executive Summary\n"
+        "A warm, empathetic opening stating the overall risk assessment and reassurance.\n\n"
+        "### 📊 Vitals & Diagnostic Analysis\n"
+        "Explain what {chol} mg/dL cholesterol and {thalach} bpm max heart rate mean in plain English without confusing jargon.\n\n"
+        "### 💡 Evidence-Based Lifestyle & Health Guidance\n"
+        "Provide 3-4 bulleted, actionable lifestyle, dietary, and exercise recommendations derived directly from the retrieved guidelines.\n\n"
+        "### 🩺 Recommended Next Steps\n"
+        "Clear, supportive advice on routine monitoring and consulting their physician."
     ),
-    expected_output="A 2-paragraph draft medical report that combines the diagnostic result with clinical guidelines in an empathetic tone.",
+    expected_output="A beautifully structured markdown clinical report with clear headings, bullet points, and plain English explanations.",
     agent=reporting_agent
 )
 
 # 3. Critique Task (Self-Critique/Reflection Pattern)
 critique_task = Task(
     description=(
-        "Review the drafted medical report. Ensure that it is highly compassionate, medically safe, easy to "
-        "understand for a layperson, and contains actionable next steps. Check that it translates all statistics "
-        "into plain English and adheres to a supportive clinical communication style. Revise the text if necessary. "
-        "The final output must be exactly two paragraphs."
+        "Review the drafted medical report. Ensure that:\n"
+        "1. It follows the 4 structured markdown sections (Executive Summary, Vitals & Diagnostic Analysis, Evidence-Based Guidance, Recommended Next Steps).\n"
+        "2. All medical jargon is translated into simple, compassionate English that any layperson can easily understand.\n"
+        "3. The tone is highly professional, non-alarmist, and supportive.\n"
+        "4. The recommendations strictly match the retrieved guidelines.\n\n"
+        "Refine and format the final text cleanly."
     ),
-    expected_output="The finalized 2-paragraph empathetic clinical report.",
+    expected_output="The finalized, beautifully formatted markdown clinical report.",
     agent=critique_agent
 )
 

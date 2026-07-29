@@ -15,7 +15,7 @@ load_dotenv()
 
 # Define LLMs
 groq_llm = LLM(
-    model="groq/qwen/qwen3.6-27b",
+    model="groq/llama-3.1-8b-instant",
     api_key=os.getenv("GROQ_API_KEY")
 )
 
@@ -38,12 +38,12 @@ diagnostic_agent: Agent = Agent(
 )
 
 # 2. Reporting Agent (RAG / Synthesis pattern)
-# This agent translates clinical data and ChromaDB guidelines into a cohesive report draft.
+# This agent translates clinical data and ChromaDB guidelines into a cohesive, structured report.
 reporting_agent: Agent = Agent(
     role="Clinical Communicator",
-    goal="Synthesize the diagnostic risk assessment with relevant medical guidelines from the RAG store to write a clear, empathetic clinical report.",
-    backstory="You are a compassionate clinical communicator. Your strength lies in translating complex clinical findings "
-              "and medical guidelines into patient-friendly, empathetic, and actionable medical reports in simple English.",
+    goal="Synthesize the diagnostic risk assessment with relevant medical guidelines from the RAG store to write a structured, highly professional, patient-friendly medical report.",
+    backstory="You are an expert clinical communicator and physician advocate. Your strength lies in translating complex clinical metrics "
+              "and evidence-based guidelines into clear, empathetic, beautifully structured medical reports that any patient can easily understand.",
     tools=[get_rag_tool()],
     llm=openrouter_llm,
     verbose=True
@@ -53,9 +53,9 @@ reporting_agent: Agent = Agent(
 # This agent ensures the report is medically accurate, empathetic, and safe (satisfying the 3rd agentic design pattern).
 critique_agent: Agent = Agent(
     role="Clinical Reviewer",
-    goal="Critique the drafted clinical report for safety, empathy, medical accuracy, and readability, and output a refined final report.",
+    goal="Critique the drafted clinical report for medical accuracy, empathy, clear structure, and readability, and output the polished final report.",
     backstory="You are a senior medical reviewer and clinical quality assurance expert. You audit clinical communications "
-              "to ensure they are highly supportive, scientifically accurate, easy to understand, and contain clear next steps.",
+              "to ensure they are structured with clear headings, scientifically accurate, easy to understand for patients, and contain supportive next steps.",
     llm=groq_llm,
     verbose=True
 )

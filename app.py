@@ -419,18 +419,19 @@ with col_right:
                     
                     status.update(label="✅ Analysis Complete!", state="complete", expanded=False)
                     
-                    # Display Result Card in crisp white with emerald accents
+                    # Display Result Header & Badge
                     st.markdown(f"""
                     <div class="result-box">
                         <div class="result-header">
-                            <div class="result-title">💚 Patient Clinical Assessment Report</div>
-                            <div class="result-tag">Cholesterol: {int(chol)} | Max HR: {int(thalach)}</div>
-                        </div>
-                        <div class="result-body">
-                            {report_output.replace(chr(10), '<br>')}
+                            <div class="result-title">💚 Physician-Grade Clinical Assessment Report</div>
+                            <div class="result-tag">Cholesterol: {int(chol)} mg/dL | Max HR: {int(thalach)} bpm</div>
                         </div>
                     </div>
                     """, unsafe_allow_html=True)
+                    
+                    # Render structured markdown cleanly inside a crisp white card
+                    with st.container():
+                        st.markdown(report_output)
                     
                 except Exception as e:
                     status.update(label="❌ Analysis Encountered an Error", state="error")
