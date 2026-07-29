@@ -361,12 +361,6 @@ with col_left:
     <div class="hero-description">
         Our multi-agent system evaluates patient tabular metrics using trained machine learning models, queries 20+ peer-reviewed cardiology guidelines via ChromaDB RAG, and synthesizes empathetic clinical reports.
     </div>
-    
-    <div class="feature-list">
-        <div class="feature-item"><span class="check-icon">✓</span> 100% RAG Grounded</div>
-        <div class="feature-item"><span class="check-icon">✓</span> Groq & OpenRouter Powered</div>
-        <div class="feature-item"><span class="check-icon">✓</span> Self-Critique Reflection</div>
-    </div>
     """, unsafe_allow_html=True)
 
 with col_right:
