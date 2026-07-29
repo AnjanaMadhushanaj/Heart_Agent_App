@@ -1,0 +1,22 @@
+Guideline 1: Patients with total cholesterol levels above 240 mg/dL are classified as high risk and require immediate medical evaluation.
+Guideline 2: Normal adults should aim to keep their LDL (bad) cholesterol below 100 mg/dL to prevent cardiovascular diseases.
+Guideline 3: A low-fat, high-fiber diet rich in whole grains, vegetables, and omega-3 fatty acids is recommended for cholesterol management.
+Guideline 4: Red yeast rice and plant sterols can naturally help lower LDL cholesterol levels by 10-15%.
+Guideline 5: Patients with high cholesterol should strictly avoid trans fats, hydrogenated oils, and limit saturated fat intake to under 7% of daily calories.
+Guideline 6: Aerobic exercise (such as brisk walking, swimming, or cycling) for 150 minutes per week helps increase HDL (good) cholesterol.
+Guideline 7: Tobacco smoke damages blood vessels and accelerates plaque build-up, significantly increasing risk for patients with elevated cholesterol.
+Guideline 8: Normal resting heart rate for healthy adults ranges from 60 to 100 beats per minute (bpm).
+Guideline 9: Sustained resting heart rates above 100 bpm (tachycardia) or below 60 bpm (bradycardia) should be clinically evaluated.
+Guideline 10: During moderate-intensity exercise, a person's target heart rate should be 50% to 70% of their maximum heart rate.
+Guideline 11: During vigorous physical activity, a person's target heart rate should be 70% to 85% of their maximum heart rate.
+Guideline 12: A maximum heart rate (thalach) during exercise that is abnormally low (below 120 bpm) might suggest chronotropic incompetence.
+Guideline 13: Under physical stress, a healthy heart increases cardiac output; failure to reach 85% of predicted maximum heart rate indicates potential risk.
+Guideline 14: Combined high cholesterol and low exercise heart rate (thalach) significantly compound the risk of coronary artery disease.
+Guideline 15: Patients diagnosed with high risk should monitor their blood pressure daily and maintain it below 130/80 mmHg.
+Guideline 16: Limiting sodium intake to less than 2,300 mg per day (ideally 1,500 mg) helps lower blood pressure and cardiovascular strain.
+Guideline 17: Chronic stress triggers cortisol release, which can raise cholesterol levels and increase resting heart rate.
+Guideline 18: Individuals with a family history of early heart disease should undergo screening starting at age 20.
+Guideline 19: High-dose statin therapy is the primary pharmacological intervention for patients with clinical atherosclerotic cardiovascular disease.
+Guideline 20: Regular diagnostic monitoring via lipid panels and electrocardiograms (ECG) is essential for patients with multiple risk factors.
+Guideline 21: Clinicians should communicate risk assessments with empathy, focusing on actionable lifestyle changes rather than alarmist diagnostics.
+Guideline 22: Hydration plays a key role in cardiovascular efficiency; dehydration can cause temporary increases in heart rate.
