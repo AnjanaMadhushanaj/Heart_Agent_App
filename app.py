@@ -335,25 +335,65 @@ st.markdown("""
         letter-spacing: 0.5px;
     }
 
-    /* White & Green Input Control Boxes */
-    div[data-baseweb="input"] {
-        background-color: rgba(255, 255, 255, 0.06) !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    /* Glass Input Card Container */
+    .input-card-container {
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 230, 118, 0.25);
+        border-radius: 20px;
+        padding: 1.8rem 2rem 2.2rem 2rem;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5),
+                    0 0 25px rgba(0, 230, 118, 0.08);
+        margin-bottom: 1.5rem;
+    }
+
+    /* Number Input Label Styling */
+    div[data-testid="stNumberInput"] label {
+        color: #f8fafc !important;
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
+        margin-bottom: 0.5rem !important;
+        padding-top: 0.4rem !important;
+        letter-spacing: -0.2px !important;
+    }
+
+    /* Input Field Outer Container */
+    div[data-testid="stNumberInput"] > div {
+        background-color: rgba(15, 23, 42, 0.65) !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
         border-radius: 12px !important;
+        overflow: hidden !important;
+        transition: all 0.25s ease-in-out !important;
+    }
+
+    div[data-testid="stNumberInput"] > div:focus-within {
+        border-color: #00e676 !important;
+        box-shadow: 0 0 15px rgba(0, 230, 118, 0.35) !important;
+        background-color: rgba(15, 23, 42, 0.85) !important;
+    }
+
+    /* Input Text Box */
+    div[data-baseweb="input"] {
+        background-color: transparent !important;
+        border: none !important;
         color: #ffffff !important;
         font-weight: 600 !important;
+        font-size: 1rem !important;
     }
 
-    div[data-baseweb="input"]:focus-within {
-        border-color: #00e676 !important;
-        box-shadow: 0 0 15px rgba(0, 230, 118, 0.3) !important;
-        background-color: rgba(255, 255, 255, 0.1) !important;
+    /* Step Buttons (+ / -) Styling */
+    div[data-testid="stNumberInput"] button {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        color: #00e676 !important;
+        border: none !important;
+        border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+        transition: background-color 0.2s ease !important;
     }
 
-    .stNumberInput label {
-        color: #e2e8f0 !important;
-        font-weight: 600 !important;
-        font-size: 0.95rem !important;
+    div[data-testid="stNumberInput"] button:hover {
+        background-color: rgba(0, 230, 118, 0.18) !important;
+        color: #ffffff !important;
     }
 
     /* Refined Compact Button Styling - Synchronized & Theme Aligned */
