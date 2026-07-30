@@ -378,38 +378,37 @@ st.markdown("""
         box-sizing: border-box !important;
     }
 
-    /* Primary Action Button: Run Clinical Analysis (Deep Violet & Mint Gradient) */
+    /* Primary Action Button: Run Clinical Analysis (Vibrant Neon Mint Gradient) */
     div[data-testid="stColumn"]:nth-of-type(1) div[data-testid="stButton"] > button,
     div[data-testid="stColumn"]:first-child div[data-testid="stButton"] > button {
-        background: linear-gradient(135deg, #059669 0%, #7c3aed 100%) !important;
-        color: #ffffff !important;
-        border: 1px solid rgba(167, 139, 250, 0.3) !important;
-        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3) !important;
+        background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%) !important;
+        color: #061510 !important;
+        border: none !important;
+        box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4) !important;
         cursor: pointer !important;
     }
 
     div[data-testid="stColumn"]:nth-of-type(1) div[data-testid="stButton"] > button:hover,
     div[data-testid="stColumn"]:first-child div[data-testid="stButton"] > button:hover {
-        background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%) !important;
-        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45) !important;
+        background: linear-gradient(135deg, #00f080 0%, #00e5ff 100%) !important;
+        box-shadow: 0 8px 25px rgba(0, 230, 118, 0.6) !important;
         transform: translateY(-1px) !important;
     }
 
-    /* Secondary Action Button: View Assessment Report (Active State) */
+    /* Secondary Action Button: View Assessment Report (Active State - Cloned Mint Gradient) */
     div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button:not([disabled]),
     div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button:not([disabled]) {
-        background: rgba(124, 58, 237, 0.15) !important;
-        color: #c084fc !important;
-        border: 1.5px solid rgba(192, 132, 252, 0.4) !important;
-        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2) !important;
+        background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%) !important;
+        color: #061510 !important;
+        border: none !important;
+        box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4) !important;
         cursor: pointer !important;
     }
 
     div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button:not([disabled]):hover,
     div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button:not([disabled]):hover {
-        background: rgba(124, 58, 237, 0.28) !important;
-        border-color: #c084fc !important;
-        box-shadow: 0 6px 20px rgba(192, 132, 252, 0.35) !important;
+        background: linear-gradient(135deg, #00f080 0%, #00e5ff 100%) !important;
+        box-shadow: 0 8px 25px rgba(0, 230, 118, 0.6) !important;
         transform: translateY(-1px) !important;
     }
 
