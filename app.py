@@ -356,52 +356,72 @@ st.markdown("""
         font-size: 0.95rem !important;
     }
 
-    /* Ultra-Specific Identical Twin Button Styling */
+    /* Refined Compact Button Styling - Synchronized & Theme Aligned */
     div[data-testid="stButton"] > button,
     button[data-testid="baseButton-secondary"],
     button[data-testid="baseButton-primary"],
     div.stButton > button {
-        height: 52px !important;
-        min-height: 52px !important;
-        max-height: 52px !important;
+        height: 44px !important;
+        min-height: 44px !important;
+        max-height: 44px !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
-        font-weight: 700 !important;
-        font-size: 0.95rem !important;
-        border-radius: 14px !important;
-        padding: 0.75rem 1.25rem !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        border-radius: 10px !important;
+        padding: 0.5rem 1rem !important;
         width: 100% !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         transition: all 0.25s ease-in-out !important;
-        margin-top: 0.8rem !important;
+        margin-top: 0.6rem !important;
         box-sizing: border-box !important;
-        background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%) !important;
-        color: #061510 !important;
-        border: none !important;
-        box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4) !important;
+    }
+
+    /* Primary Action Button: Run Clinical Analysis (Deep Violet & Mint Gradient) */
+    div[data-testid="stColumn"]:nth-of-type(1) div[data-testid="stButton"] > button,
+    div[data-testid="stColumn"]:first-child div[data-testid="stButton"] > button {
+        background: linear-gradient(135deg, #059669 0%, #7c3aed 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(167, 139, 250, 0.3) !important;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3) !important;
         cursor: pointer !important;
     }
 
-    div[data-testid="stButton"] > button:hover,
-    button[data-testid="baseButton-secondary"]:hover,
-    button[data-testid="baseButton-primary"]:hover,
-    div.stButton > button:hover {
-        background: linear-gradient(135deg, #00f080 0%, #00e5ff 100%) !important;
-        box-shadow: 0 8px 25px rgba(0, 230, 118, 0.6) !important;
-        transform: translateY(-2px) !important;
+    div[data-testid="stColumn"]:nth-of-type(1) div[data-testid="stButton"] > button:hover,
+    div[data-testid="stColumn"]:first-child div[data-testid="stButton"] > button:hover {
+        background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%) !important;
+        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45) !important;
+        transform: translateY(-1px) !important;
     }
 
-    div[data-testid="stButton"] > button:disabled,
-    button[data-testid="baseButton-secondary"]:disabled,
-    button[data-testid="baseButton-primary"]:disabled,
-    div.stButton > button:disabled {
-        background: rgba(0, 230, 118, 0.15) !important;
+    /* Secondary Action Button: View Assessment Report (Active State) */
+    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button:not([disabled]),
+    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button:not([disabled]) {
+        background: rgba(124, 58, 237, 0.15) !important;
+        color: #c084fc !important;
+        border: 1.5px solid rgba(192, 132, 252, 0.4) !important;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2) !important;
+        cursor: pointer !important;
+    }
+
+    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button:not([disabled]):hover,
+    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button:not([disabled]):hover {
+        background: rgba(124, 58, 237, 0.28) !important;
+        border-color: #c084fc !important;
+        box-shadow: 0 6px 20px rgba(192, 132, 252, 0.35) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* Secondary Action Button: View Assessment Report (Disabled / Initial State) */
+    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button[disabled],
+    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button[disabled] {
+        background: rgba(255, 255, 255, 0.03) !important;
         color: #64748b !important;
-        border: 1.5px solid rgba(0, 230, 118, 0.25) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
         box-shadow: none !important;
         cursor: not-allowed !important;
-        opacity: 0.75 !important;
+        opacity: 0.65 !important;
     }
 
     /* Result Metric Display Card (White & Dark Glass) */
