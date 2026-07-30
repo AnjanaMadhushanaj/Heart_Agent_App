@@ -2,6 +2,7 @@ import os
 import streamlit as st
 import plotly.graph_objects as go
 from dotenv import load_dotenv
+from pdf_generator import generate_clinical_pdf
 
 def create_risk_gauge_chart(risk_level: str):
     """
@@ -87,6 +88,18 @@ def show_report_modal(chol: float, thalach: float, diag_prediction: str, report_
     
     # Render structured markdown report
     st.markdown(report_output)
+    
+    st.markdown("<hr style='border: none; border-top: 1px solid rgba(255,255,255,0.15); margin: 1.5rem 0 1rem 0;'>", unsafe_allow_html=True)
+    
+    # Generate & Download PDF Report
+    pdf_bytes = generate_clinical_pdf(chol, thalach, diag_prediction, report_output)
+    st.download_button(
+        label="📥 Download Official Assessment Report (PDF)",
+        data=pdf_bytes,
+        file_name=f"CardioCare_Report_{int(chol)}mgdl_{int(thalach)}bpm.pdf",
+        mime="application/pdf",
+        key="modal_pdf_download_btn"
+    )
 
 # Page configuration - Wide layout for SaaS Landing Page & Dashboard aesthetic
 st.set_page_config(
@@ -461,6 +474,26 @@ st.markdown("""
         box-shadow: none !important;
         cursor: not-allowed !important;
         opacity: 0.65 !important;
+    /* Download PDF Button Styling */
+    div.stDownloadButton > button {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 0.75rem 1.5rem !important;
+        width: 100% !important;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35) !important;
+        transition: all 0.25s ease-in-out !important;
+        cursor: pointer !important;
+        margin-top: 0.5rem !important;
+    }
+
+    div.stDownloadButton > button:hover {
+        background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5) !important;
+        transform: translateY(-2px) !important;
     }
 
     /* Result Metric Display Card (White & Dark Glass) */
