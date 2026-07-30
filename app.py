@@ -480,6 +480,8 @@ with col_right:
         reopen_analysis = False
         if st.session_state.get("last_report") is not None:
             reopen_analysis = st.button("📋 View Assessment Report", key="reopen_report_btn")
+        else:
+            st.button("📋 View Assessment Report", key="disabled_report_btn", disabled=True, help="Run Clinical Analysis first to generate and view the report.")
             
     if run_analysis:
         g_key = os.environ.get("GROQ_API_KEY", "")
