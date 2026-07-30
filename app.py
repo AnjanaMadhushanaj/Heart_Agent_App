@@ -3,242 +3,21 @@ import streamlit as st
 import plotly.graph_objects as go
 from dotenv import load_dotenv
 
-# Page configuration - Deep Purple Glassmorphism Aesthetic
-st.set_page_config(
-    page_title="CardioCare AI | Clinical Decision Support System",
-    page_icon="❤️",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
-
-# Load environment keys
-load_dotenv()
-
-# 1. Comprehensive CSS Injection for Deep Purple Glassmorphism Design System
-st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-    
-    /* Force Pure Dark Deep Purple App Background */
-    .stApp {
-        background-color: #050110 !important;
-        background-image: radial-gradient(circle at 50% 15%, #1e1038 0%, #050110 75%) !important;
-        color: #ffffff !important;
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
-    }
-
-    /* Hide default Streamlit top header bar */
-    header[data-testid="stHeader"] {
-        background-color: transparent !important;
-    }
-
-    /* Container constraints */
-    .block-container {
-        padding-top: 1.8rem !important;
-        padding-bottom: 3rem !important;
-        max-width: 1050px !important;
-    }
-
-    /* Top Navigation Bar */
-    .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.9rem 1.6rem;
-        margin-bottom: 2.2rem;
-        background: rgba(25, 14, 45, 0.45);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(138, 43, 226, 0.3);
-        border-radius: 18px;
-    }
-
-    .nav-logo {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-size: 1.45rem;
-        font-weight: 800;
-        color: #ffffff;
-        letter-spacing: -0.5px;
-    }
-
-    .nav-logo-icon {
-        background: rgba(138, 43, 226, 0.25);
-        border: 1px solid rgba(167, 139, 250, 0.4);
-        border-radius: 10px;
-        padding: 0.35rem 0.6rem;
-        font-size: 1.25rem;
-    }
-
-    .nav-tag {
-        background: rgba(167, 139, 250, 0.12);
-        border: 1px solid rgba(167, 139, 250, 0.35);
-        color: #c084fc;
-        font-size: 0.82rem;
-        font-weight: 700;
-        padding: 0.35rem 0.95rem;
-        border-radius: 20px;
-        letter-spacing: 0.5px;
-    }
-
-    /* Hero Section */
-    .hero-title {
-        font-size: 3.2rem;
-        font-weight: 800;
-        text-align: center;
-        color: #ffffff;
-        margin-bottom: 0.5rem;
-        letter-spacing: -1px;
-    }
-
-    .hero-highlight {
-        background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #8b5cf6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .hero-subtitle {
-        font-size: 1.1rem;
-        color: #94a3b8;
-        text-align: center;
-        margin-bottom: 2.2rem;
-        max-width: 750px;
-        margin-left: auto;
-        margin-right: auto;
-        line-height: 1.6;
-        font-weight: 400;
-    }
-
-    /* Glass Container Class for Inputs */
-    .glass-container {
-        background: rgba(30, 20, 50, 0.4) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
-        border: 1px solid rgba(138, 43, 226, 0.3) !important;
-        border-radius: 20px !important;
-        padding: 2.2rem !important;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
-                    0 0 25px 0 rgba(138, 43, 226, 0.15) !important;
-        margin-bottom: 2rem !important;
-    }
-
-    /* Input Controls Styling */
-    div[data-baseweb="input"] {
-        background-color: rgba(15, 10, 30, 0.65) !important;
-        border: 1px solid rgba(138, 43, 226, 0.3) !important;
-        border-radius: 12px !important;
-        color: #ffffff !important;
-        font-weight: 600 !important;
-    }
-
-    div[data-baseweb="input"]:focus-within {
-        border-color: #a78bfa !important;
-        box-shadow: 0 0 18px rgba(167, 139, 250, 0.45) !important;
-    }
-
-    .stNumberInput label {
-        color: #e2e8f0 !important;
-        font-weight: 700 !important;
-        font-size: 1rem !important;
-        margin-bottom: 0.5rem !important;
-    }
-
-    /* Centered Button Row Layout & Custom CSS Button Styling */
-    div[data-testid="stButton"] > button,
-    button[data-testid="baseButton-secondary"],
-    button[data-testid="baseButton-primary"],
-    div.stButton > button {
-        height: 50px !important;
-        min-height: 50px !important;
-        max-height: 50px !important;
-        font-family: 'Plus Jakarta Sans', sans-serif !important;
-        font-weight: 700 !important;
-        font-size: 0.98rem !important;
-        border-radius: 12px !important;
-        padding: 0.6rem 1.6rem !important;
-        width: 100% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        transition: all 0.3s ease !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Primary CTA Button: Run Clinical Analysis (.primary-btn) */
-    div[data-testid="stColumn"]:nth-of-type(1) div[data-testid="stButton"] > button,
-    div[data-testid="stColumn"]:first-child div[data-testid="stButton"] > button {
-        background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%) !important;
-        color: #ffffff !important;
-        border: 1px solid rgba(167, 139, 250, 0.5) !important;
-        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.45) !important;
-        cursor: pointer !important;
-    }
-
-    div[data-testid="stColumn"]:nth-of-type(1) div[data-testid="stButton"] > button:hover,
-    div[data-testid="stColumn"]:first-child div[data-testid="stButton"] > button:hover {
-        background: linear-gradient(135deg, #8b5cf6 0%, #5b21b6 100%) !important;
-        box-shadow: 0 6px 28px rgba(139, 92, 246, 0.65) !important;
-        transform: translateY(-2px) !important;
-    }
-
-    /* Secondary Action Button: View Assessment Report (.secondary-btn) */
-    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button,
-    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button {
-        background: rgba(124, 58, 237, 0.18) !important;
-        color: #c084fc !important;
-        border: 1.5px solid rgba(192, 132, 252, 0.45) !important;
-        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25) !important;
-        cursor: pointer !important;
-    }
-
-    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button:hover,
-    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button:hover {
-        background: rgba(124, 58, 237, 0.32) !important;
-        border-color: #c084fc !important;
-        box-shadow: 0 6px 24px rgba(192, 132, 252, 0.45) !important;
-        transform: translateY(-2px) !important;
-    }
-
-    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button:disabled,
-    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button:disabled {
-        background: rgba(255, 255, 255, 0.03) !important;
-        color: #64748b !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
-        box-shadow: none !important;
-        cursor: not-allowed !important;
-        opacity: 0.65 !important;
-    }
-
-    /* Dedicated Glassmorphism Report Box */
-    .report-glass-box {
-        background: rgba(22, 14, 42, 0.85) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
-        border: 1px solid rgba(167, 139, 250, 0.35) !important;
-        border-radius: 20px !important;
-        padding: 2.2rem !important;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5),
-                    0 0 30px rgba(138, 43, 226, 0.2) !important;
-        color: #f1f5f9 !important;
-        margin-top: 2rem !important;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-# Helper function for Plotly Gauge Chart inside modal popup
 def create_risk_gauge_chart(risk_level: str):
     """
-    Creates a Plotly Gauge Chart for Cardiovascular Risk Score.
-    HIGH RISK -> value 85, Deep Purple & Neon Red accents
-    LOW RISK -> value 15, Deep Purple & Emerald Green accents
+    Creates a visual Gauge Chart using plotly.graph_objects (go.Indicator).
+    - HIGH RISK -> value 85
+    - LOW RISK -> value 15
+    - Transparent background (paper_bgcolor & plot_bgcolor = rgba(0,0,0,0))
+    - Deep purple and subtle neon-lit accents matching the glassmorphism dark aesthetic.
     """
     is_high_risk = "HIGH" in str(risk_level).upper()
     gauge_val = 85 if is_high_risk else 15
     
+    # Deep purple and neon accent colors
     gauge_bar_color = "#9333ea" if is_high_risk else "#10b981"
     accent_glow_color = "#c084fc" if is_high_risk else "#34d399"
-    status_label = "HIGH RISK DETECTED" if is_high_risk else "LOW RISK ASSESSMENT"
+    status_label = "HIGH RISK" if is_high_risk else "LOW RISK"
     
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
@@ -287,144 +66,508 @@ def create_risk_gauge_chart(risk_level: str):
     )
     return fig
 
-# Centered Popup Modal
-@st.dialog("💜 Patient Clinical Assessment Report", width="large")
+@st.dialog("💚 Patient Clinical Assessment Report", width="large")
 def show_report_modal(chol: float, thalach: float, diag_prediction: str, report_output: str):
-    """Centered popup modal displaying the diagnostic gauge chart and full clinical report."""
+    """Centered popup modal displaying the diagnostic gauge chart and clinical report."""
+    # Render Plotly Gauge Chart inside centered popup
     gauge_fig = create_risk_gauge_chart(diag_prediction)
     st.plotly_chart(gauge_fig, use_container_width=True)
     
+    # Display Result Header & Badge
     st.markdown(f"""
-    <div style="background: rgba(30, 18, 55, 0.9); border-left: 6px solid #a78bfa; border-top: 1px solid rgba(167, 139, 250, 0.3); border-right: 1px solid rgba(167, 139, 250, 0.3); border-bottom: 1px solid rgba(167, 139, 250, 0.3); border-radius: 14px; padding: 1.2rem 1.5rem; margin-bottom: 1.2rem;">
+    <div style="background: #ffffff; color: #0f172a; border-radius: 14px; padding: 1.2rem 1.5rem; margin-bottom: 1.2rem; border-left: 6px solid #10b981; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: 800; font-size: 1.2rem; color: #ffffff;">💜 Physician-Grade Clinical Assessment</span>
-            <span style="background: rgba(167, 139, 250, 0.15); color: #c084fc; border: 1px solid rgba(167, 139, 250, 0.4); padding: 0.35rem 0.85rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">
+            <span style="font-weight: 800; font-size: 1.2rem; color: #047857;">💚 Physician-Grade Clinical Assessment</span>
+            <span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 0.35rem 0.85rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">
                 Cholesterol: {int(chol)} mg/dL | Max HR: {int(thalach)} bpm
             </span>
         </div>
     </div>
     """, unsafe_allow_html=True)
     
-    # Display full report text cleanly
+    # Render structured markdown report
     st.markdown(report_output)
 
-# 2. Top Navigation Bar
+# Page configuration - Wide layout for SaaS Landing Page & Dashboard aesthetic
+st.set_page_config(
+    page_title="CardioCare AI | Agentic Clinical Decision Support",
+    page_icon="❤️",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+# Custom CSS for SaaS Dark-Grey + Crisp White + Neon Mint Green Aesthetic (MediClaim AI style)
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    
+    /* Main app background - Dark Matte Charcoal with subtle radial glow */
+    .stApp {
+        background: radial-gradient(circle at 80% 20%, #0f1c18 0%, #090d14 60%, #05080e 100%);
+        color: #f8fafc;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    /* Remove default padding & Streamlit header */
+    .block-container {
+        padding-top: 1.5rem !important;
+        padding-bottom: 3rem !important;
+        max-width: 1280px !important;
+    }
+
+    header[data-testid="stHeader"] {
+        background-color: transparent !important;
+    }
+
+    /* Top Navigation Bar */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem 0;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: -0.5px;
+    }
+
+    .nav-logo-icon {
+        background: rgba(0, 230, 118, 0.15);
+        border: 1px solid rgba(0, 230, 118, 0.4);
+        border-radius: 10px;
+        padding: 0.4rem 0.6rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+        font-size: 0.95rem;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+
+    .nav-badge {
+        background: linear-gradient(135deg, rgba(0, 230, 118, 0.2) 0%, rgba(0, 176, 255, 0.2) 100%);
+        border: 1px solid rgba(0, 230, 118, 0.5);
+        color: #00e676;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 0.35rem 0.9rem;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Left Hero Column Styling */
+    .hero-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(0, 230, 118, 0.08);
+        border: 1px solid rgba(0, 230, 118, 0.3);
+        color: #00e676;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 0.4rem 1rem;
+        border-radius: 30px;
+        margin-bottom: 1.2rem;
+    }
+
+    .hero-title {
+        font-size: 3.4rem;
+        font-weight: 800;
+        line-height: 1.15;
+        color: #ffffff;
+        margin-bottom: 1.2rem;
+        letter-spacing: -1px;
+    }
+
+    .hero-highlight {
+        color: #00e676;
+        background: linear-gradient(135deg, #00e676 0%, #38ef7d 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-description {
+        font-size: 1.1rem;
+        color: #94a3b8;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        max-width: 540px;
+        font-weight: 400;
+    }
+
+    /* Pumping Blood Heart Animation Container */
+    .hero-animation-box {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 1.2rem 1.6rem;
+        margin-bottom: 2rem;
+        max-width: 500px;
+    }
+
+    .heart-pulse-container {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .heart-pulse-icon {
+        font-size: 2.5rem;
+        z-index: 2;
+        animation: heartPump 1.2s infinite ease-in-out;
+        filter: drop-shadow(0 0 15px rgba(0, 230, 118, 0.6));
+    }
+
+    .pulse-ring {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(0, 230, 118, 0.3);
+        animation: pulseRipple 1.8s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+        z-index: 1;
+    }
+
+    .pulse-ring-delay {
+        animation-delay: 0.6s;
+    }
+
+    @keyframes heartPump {
+        0% { transform: scale(1); }
+        14% { transform: scale(1.2); }
+        28% { transform: scale(1); }
+        42% { transform: scale(1.15); }
+        70% { transform: scale(1); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes pulseRipple {
+        0% { transform: scale(0.8); opacity: 0.8; }
+        80%, 100% { transform: scale(2.2); opacity: 0; }
+    }
+
+    .animation-text-main {
+        font-weight: 700;
+        color: #ffffff;
+        font-size: 1rem;
+    }
+
+    .animation-text-sub {
+        font-size: 0.85rem;
+        color: #00e676;
+        font-weight: 500;
+    }
+
+    /* Feature Checkmarks */
+    .feature-list {
+        display: flex;
+        gap: 1.8rem;
+        margin-bottom: 2rem;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: #cbd5e1;
+        font-weight: 500;
+    }
+
+    .check-icon {
+        color: #00e676;
+        font-weight: 800;
+    }
+
+    /* Right Column - SaaS Dashboard Card */
+    .dashboard-card {
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 230, 118, 0.25);
+        border-radius: 24px;
+        padding: 2.2rem;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 
+                    0 0 30px rgba(0, 230, 118, 0.1);
+    }
+
+    .card-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    .status-pill {
+        background: rgba(0, 230, 118, 0.12);
+        color: #00e676;
+        border: 1px solid rgba(0, 230, 118, 0.3);
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* White & Green Input Control Boxes */
+    div[data-baseweb="input"] {
+        background-color: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 12px !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+
+    div[data-baseweb="input"]:focus-within {
+        border-color: #00e676 !important;
+        box-shadow: 0 0 15px rgba(0, 230, 118, 0.3) !important;
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .stNumberInput label {
+        color: #e2e8f0 !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+    }
+
+    /* Refined Compact Button Styling - Synchronized & Theme Aligned */
+    div[data-testid="stButton"] > button,
+    button[data-testid="baseButton-secondary"],
+    button[data-testid="baseButton-primary"],
+    div.stButton > button {
+        height: 44px !important;
+        min-height: 44px !important;
+        max-height: 44px !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        border-radius: 10px !important;
+        padding: 0.5rem 1rem !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.25s ease-in-out !important;
+        margin-top: 0.6rem !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Primary Action Button: Run Clinical Analysis (Deep Violet & Mint Gradient) */
+    div[data-testid="stColumn"]:nth-of-type(1) div[data-testid="stButton"] > button,
+    div[data-testid="stColumn"]:first-child div[data-testid="stButton"] > button {
+        background: linear-gradient(135deg, #059669 0%, #7c3aed 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(167, 139, 250, 0.3) !important;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3) !important;
+        cursor: pointer !important;
+    }
+
+    div[data-testid="stColumn"]:nth-of-type(1) div[data-testid="stButton"] > button:hover,
+    div[data-testid="stColumn"]:first-child div[data-testid="stButton"] > button:hover {
+        background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%) !important;
+        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* Secondary Action Button: View Assessment Report (Active State) */
+    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button:not([disabled]),
+    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button:not([disabled]) {
+        background: rgba(124, 58, 237, 0.15) !important;
+        color: #c084fc !important;
+        border: 1.5px solid rgba(192, 132, 252, 0.4) !important;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2) !important;
+        cursor: pointer !important;
+    }
+
+    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button:not([disabled]):hover,
+    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button:not([disabled]):hover {
+        background: rgba(124, 58, 237, 0.28) !important;
+        border-color: #c084fc !important;
+        box-shadow: 0 6px 20px rgba(192, 132, 252, 0.35) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* Secondary Action Button: View Assessment Report (Disabled / Initial State) */
+    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button[disabled],
+    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button[disabled] {
+        background: rgba(255, 255, 255, 0.03) !important;
+        color: #64748b !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: none !important;
+        cursor: not-allowed !important;
+        opacity: 0.65 !important;
+    }
+
+    /* Result Metric Display Card (White & Dark Glass) */
+    .result-box {
+        background: #ffffff;
+        color: #0f172a;
+        border-radius: 18px;
+        padding: 1.8rem;
+        margin-top: 1.5rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        border: 2px solid #00e676;
+    }
+
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 0.8rem;
+    }
+
+    .result-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #059669;
+    }
+
+    .result-tag {
+        background: #ecfdf5;
+        color: #047857;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        border: 1px solid #a7f3d0;
+    }
+
+    .result-body {
+        font-size: 1.02rem;
+        line-height: 1.65;
+        color: #334155;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Top Navigation Bar
 st.markdown("""
 <div class="navbar">
     <div class="nav-logo">
         <div class="nav-logo-icon">❤️</div>
         CardioCare AI
     </div>
-    <div class="nav-tag">CLINICAL DECISION SUPPORT SYSTEM</div>
 </div>
 """, unsafe_allow_html=True)
 
-# Hero Section
-st.markdown("""
-<div class="hero-title">
-    Cardiovascular Risk Assessment with <span class="hero-highlight">Agentic AI</span>
-</div>
-<div class="hero-subtitle">
-    Advanced AI-powered cardiovascular intelligence designed to assist clinical decision-making. Our multi-agent system evaluates key patient vitals against verified medical guidelines to deliver accurate, empathetic, and physician-grade heart health assessments.
-</div>
-""", unsafe_allow_html=True)
+# Load environment keys
+load_dotenv()
 
-# 3. Layout Refactor: Single Styled Glass Container for Inputs
-st.markdown('<div class="glass-container">', unsafe_allow_html=True)
+# Split Hero & Dashboard Layout
+col_left, col_right = st.columns([1.15, 1], gap="large")
 
-col1, col2 = st.columns(2)
-with col1:
-    chol = st.number_input(
-        "Total Cholesterol (mg/dL)",
-        min_value=50.0,
-        max_value=600.0,
-        value=245.0,
-        step=1.0,
-        help="Normal is below 200 mg/dL. High risk is classified above 240 mg/dL."
-    )
-
-with col2:
-    thalach = st.number_input(
-        "Maximum Heart Rate Achieved (bpm)",
-        min_value=50.0,
-        max_value=250.0,
-        value=142.0,
-        step=1.0,
-        help="Expected range during exercise stress testing is 60 to 200 bpm."
-    )
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-# 4. Buttons Row: Outside Container & Centrally Aligned
-btn_space_left, btn_col1, btn_col2, btn_space_right = st.columns([0.5, 2, 2, 0.5])
-
-with btn_col1:
-    run_analysis = st.button("Run Clinical Analysis  →", key="run_analysis_btn")
-
-with btn_col2:
-    reopen_analysis = False
-    if st.session_state.get("last_report") is not None:
-        reopen_analysis = st.button("View Assessment Report", key="reopen_report_btn")
-    else:
-        st.button("View Assessment Report", key="disabled_report_btn", disabled=True, help="Run Clinical Analysis first to generate the report.")
-
-# Execution Trigger
-if run_analysis:
-    g_key = os.environ.get("GROQ_API_KEY", "")
-    or_key = os.environ.get("OPENROUTER_API_KEY", "")
-    
-    if not g_key or g_key == "your_groq_api_key_here" or not or_key or or_key == "your_openrouter_api_key_here":
-        st.error("⚠️ **API Keys Missing!** Please ensure GROQ_API_KEY and OPENROUTER_API_KEY are configured in your `.env` file or Streamlit Secrets.")
-    else:
-        with st.status("🧬 Analyzing patient parameters with AI agents...", expanded=True) as status:
-            try:
-                status.write("🧠 Diagnostic Agent: Executing ML Classifier...")
-                from tools import predict_heart_disease
-                from crew_logic import run_clinical_analysis
-                
-                # Execute Diagnostic prediction
-                diag_prediction = predict_heart_disease.func(chol, thalach)
-                
-                status.write("📚 Reporting Agent: Querying ChromaDB RAG Guidelines...")
-                status.write("✍️ Synthesizing Empathetic Clinical Report...")
-                status.write("🔍 Critique Agent: Auditing Report for Safety & Empathy...")
-                
-                report_output = run_clinical_analysis(chol=chol, thalach=thalach)
-                
-                # Store in session state
-                st.session_state["last_report"] = {
-                    "chol": chol,
-                    "thalach": thalach,
-                    "diag_prediction": diag_prediction,
-                    "report_output": report_output
-                }
-                
-                status.update(label="✅ Analysis Complete! Opening Report Modal...", state="complete", expanded=False)
-                
-                # Show centered modal popup
-                show_report_modal(chol, thalach, diag_prediction, report_output)
-                
-            except Exception as e:
-                status.update(label="❌ Analysis Encountered an Error", state="error")
-                st.error(f"An error occurred during agent execution: {str(e)}")
-
-if reopen_analysis:
-    last = st.session_state["last_report"]
-    show_report_modal(last["chol"], last["thalach"], last["diag_prediction"], last["report_output"])
-
-# 5. Fix Report Text Display: Clean Glassmorphism Container Below Buttons
-if st.session_state.get("last_report") is not None:
-    last = st.session_state["last_report"]
-    st.markdown('<div class="report-glass-box">', unsafe_allow_html=True)
-    st.markdown(f"""
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(167, 139, 250, 0.2); padding-bottom: 0.8rem;">
-        <span style="font-weight: 800; font-size: 1.25rem; color: #a78bfa;">💜 Patient Assessment Summary Report</span>
-        <span style="background: rgba(167, 139, 250, 0.15); color: #c084fc; border: 1px solid rgba(167, 139, 250, 0.4); padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">
-            Cholesterol: {int(last['chol'])} mg/dL | Max HR: {int(last['thalach'])} bpm
-        </span>
+with col_left:
+    st.markdown("""
+    <div class="hero-pill">⚡ AI-Powered Clinical Decision System</div>
+    <div class="hero-title">
+        Accurate Heart Risk Analysis with <span class="hero-highlight">Agentic AI</span>
+    </div>
+    <div class="hero-description">
+        Advanced AI-powered cardiovascular intelligence designed to assist clinical decision-making. Our system evaluates key patient vitals against verified medical guidelines to deliver accurate, empathetic, and physician-grade heart health assessments.
     </div>
     """, unsafe_allow_html=True)
+
+with col_right:
+    input_col1, input_col2 = st.columns(2)
+    with input_col1:
+        chol = st.number_input(
+            "Total Cholesterol (mg/dL)",
+            min_value=50.0,
+            max_value=600.0,
+            value=245.0,
+            step=1.0,
+            help="Normal is below 200 mg/dL. High risk is classified above 240 mg/dL."
+        )
+    with input_col2:
+        thalach = st.number_input(
+            "Max Heart Rate (bpm)",
+            min_value=50.0,
+            max_value=250.0,
+            value=142.0,
+            step=1.0,
+            help="Expected range during exercise testing is 60 to 200 bpm."
+        )
     
-    # Display full report text clearly without truncation or ellipses
-    st.markdown(last['report_output'])
-    st.markdown('</div>', unsafe_allow_html=True)
+    # Action buttons arranged side-by-side
+    btn_col1, btn_col2 = st.columns(2)
+    
+    with btn_col1:
+        run_analysis = st.button("Run Clinical Analysis  →", key="run_analysis_btn")
+        
+    with btn_col2:
+        reopen_analysis = False
+        if st.session_state.get("last_report") is not None:
+            reopen_analysis = st.button("📋 View Assessment Report", key="reopen_report_btn")
+        else:
+            st.button("📋 View Assessment Report", key="disabled_report_btn", disabled=True, help="Run Clinical Analysis first to generate and view the report.")
+            
+    if run_analysis:
+        g_key = os.environ.get("GROQ_API_KEY", "")
+        or_key = os.environ.get("OPENROUTER_API_KEY", "")
+        
+        if not g_key or g_key == "your_groq_api_key_here" or not or_key or or_key == "your_openrouter_api_key_here":
+            st.error("⚠️ **API Keys Missing!** Please ensure GROQ_API_KEY and OPENROUTER_API_KEY are configured in your `.env` file or Streamlit Secrets.")
+        else:
+            with st.status("🧬 Analyzing patient parameters with AI agents...", expanded=True) as status:
+                try:
+                    status.write("🧠 Diagnostic Agent: Executing ML Classifier...")
+                    from tools import predict_heart_disease
+                    from crew_logic import run_clinical_analysis
+                    
+                    # Execute Diagnostic prediction directly for instant visual gauge chart
+                    diag_prediction = predict_heart_disease.func(chol, thalach)
+                    
+                    status.write("📚 Reporting Agent: Querying ChromaDB RAG Guidelines...")
+                    status.write("✍️ Synthesizing Empathetic Clinical Report...")
+                    status.write("🔍 Critique Agent: Auditing Report for Safety & Empathy...")
+                    
+                    report_output = run_clinical_analysis(chol=chol, thalach=thalach)
+                    
+                    # Store generated report in session state
+                    st.session_state["last_report"] = {
+                        "chol": chol,
+                        "thalach": thalach,
+                        "diag_prediction": diag_prediction,
+                        "report_output": report_output
+                    }
+                    
+                    status.update(label="✅ Analysis Complete! Opening Report Modal...", state="complete", expanded=False)
+                    
+                    # Open centered popup modal with Gauge Chart & Report
+                    show_report_modal(chol, thalach, diag_prediction, report_output)
+                    
+                except Exception as e:
+                    status.update(label="❌ Analysis Encountered an Error", state="error")
+                    st.error(f"An error occurred during agent execution: {str(e)}")
+
+    if reopen_analysis:
+        last = st.session_state["last_report"]
+        show_report_modal(last["chol"], last["thalach"], last["diag_prediction"], last["report_output"])
