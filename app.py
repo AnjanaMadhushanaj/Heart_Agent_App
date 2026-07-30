@@ -356,26 +356,45 @@ st.markdown("""
         font-size: 0.95rem !important;
     }
 
-    /* Style Action Button in Neon Mint Green */
+    /* Universal Button Height & Alignment Sync */
     div.stButton > button {
-        background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%) !important;
-        color: #061510 !important;
-        font-weight: 800 !important;
-        font-size: 1.1rem !important;
-        border: none !important;
+        height: 52px !important;
+        min-height: 52px !important;
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
         border-radius: 14px !important;
-        padding: 0.95rem 2rem !important;
+        padding: 0.75rem 1.25rem !important;
         width: 100% !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4) !important;
-        cursor: pointer !important;
-        margin-top: 1rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.25s ease-in-out !important;
+        margin-top: 0.8rem !important;
     }
 
-    div.stButton > button:hover {
+    /* Primary Action Button (Run Clinical Analysis) */
+    div.stButton > button:not([disabled]) {
+        background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%) !important;
+        color: #061510 !important;
+        border: none !important;
+        box-shadow: 0 6px 20px rgba(0, 230, 118, 0.35) !important;
+        cursor: pointer !important;
+    }
+
+    div.stButton > button:not([disabled]):hover {
         background: linear-gradient(135deg, #00f080 0%, #00e5ff 100%) !important;
-        box-shadow: 0 8px 30px rgba(0, 230, 118, 0.6) !important;
+        box-shadow: 0 8px 25px rgba(0, 230, 118, 0.5) !important;
         transform: translateY(-2px) !important;
+    }
+
+    /* Disabled / Secondary Button (View Assessment Report before first run) */
+    div.stButton > button[disabled] {
+        background: rgba(255, 255, 255, 0.04) !important;
+        color: #64748b !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+        box-shadow: none !important;
+        cursor: not-allowed !important;
+        opacity: 0.8 !important;
     }
 
     /* Result Metric Display Card (White & Dark Glass) */
