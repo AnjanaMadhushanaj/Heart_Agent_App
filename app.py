@@ -497,6 +497,14 @@ with col_right:
                     
                     report_output = run_clinical_analysis(chol=chol, thalach=thalach)
                     
+                    # Store generated report in session state
+                    st.session_state["last_report"] = {
+                        "chol": chol,
+                        "thalach": thalach,
+                        "diag_prediction": diag_prediction,
+                        "report_output": report_output
+                    }
+                    
                     status.update(label="✅ Analysis Complete! Opening Report Modal...", state="complete", expanded=False)
                     
                     # Open centered popup modal with Gauge Chart & Report
@@ -505,5 +513,12 @@ with col_right:
                 except Exception as e:
                     status.update(label="❌ Analysis Encountered an Error", state="error")
                     st.error(f"An error occurred during agent execution: {str(e)}")
+
+    # Persistent button to re-open the report modal if a report exists in session state
+    if st.session_state.get("last_report") is not None:
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("📋 View Assessment Report", key="reopen_report_btn"):
+            last = st.session_state["last_report"]
+            show_report_modal(last["chol"], last["thalach"], last["diag_prediction"], last["report_output"])
 
     st.markdown('</div>', unsafe_allow_html=True)
