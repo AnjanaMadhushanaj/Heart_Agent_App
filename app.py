@@ -450,10 +450,6 @@ with col_left:
     """, unsafe_allow_html=True)
 
 with col_right:
-    st.markdown("""
-    <div class="dashboard-card">
-    """, unsafe_allow_html=True)
-    
     input_col1, input_col2 = st.columns(2)
     with input_col1:
         chol = st.number_input(
@@ -520,5 +516,3 @@ with col_right:
         if st.button("📋 View Assessment Report", key="reopen_report_btn"):
             last = st.session_state["last_report"]
             show_report_modal(last["chol"], last["thalach"], last["diag_prediction"], last["report_output"])
-
-    st.markdown('</div>', unsafe_allow_html=True)
