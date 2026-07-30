@@ -522,11 +522,7 @@ with col_right:
         run_analysis = st.button("Run Clinical Analysis  →", key="run_analysis_btn")
         
     with btn_col2:
-        reopen_analysis = False
-        if st.session_state.get("last_report") is not None:
-            reopen_analysis = st.button("📋 View Assessment Report", key="reopen_report_btn")
-        else:
-            st.button("📋 View Assessment Report", key="disabled_report_btn", disabled=True, help="Run Clinical Analysis first to generate and view the report.")
+        reopen_analysis = st.button("📋 View Assessment Report", key="reopen_report_btn")
             
     if run_analysis:
         g_key = os.environ.get("GROQ_API_KEY", "")
@@ -568,5 +564,8 @@ with col_right:
                     st.error(f"An error occurred during agent execution: {str(e)}")
 
     if reopen_analysis:
-        last = st.session_state["last_report"]
-        show_report_modal(last["chol"], last["thalach"], last["diag_prediction"], last["report_output"])
+        if st.session_state.get("last_report") is not None:
+            last = st.session_state["last_report"]
+            show_report_modal(last["chol"], last["thalach"], last["diag_prediction"], last["report_output"])
+        else:
+            st.info("ℹ️ Please click **'Run Clinical Analysis  →'** first to generate your heart assessment report!")
