@@ -359,7 +359,7 @@ with col_left:
         Accurate Heart Risk Analysis with <span class="hero-highlight">Agentic AI</span>
     </div>
     <div class="hero-description">
-        Our multi-agent system evaluates patient tabular metrics using trained machine learning models, queries 20+ peer-reviewed cardiology guidelines via ChromaDB RAG, and synthesizes empathetic clinical reports.
+        Advanced AI-powered cardiovascular intelligence designed to assist clinical decision-making. Our system evaluates key patient vitals against verified medical guidelines to deliver accurate, empathetic, and physician-grade heart health assessments.
     </div>
     """, unsafe_allow_html=True)
 
