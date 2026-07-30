@@ -66,6 +66,28 @@ def create_risk_gauge_chart(risk_level: str):
     )
     return fig
 
+@st.dialog("💚 Patient Clinical Assessment Report", width="large")
+def show_report_modal(chol: float, thalach: float, diag_prediction: str, report_output: str):
+    """Centered popup modal displaying the diagnostic gauge chart and clinical report."""
+    # Render Plotly Gauge Chart inside centered popup
+    gauge_fig = create_risk_gauge_chart(diag_prediction)
+    st.plotly_chart(gauge_fig, use_container_width=True)
+    
+    # Display Result Header & Badge
+    st.markdown(f"""
+    <div style="background: #ffffff; color: #0f172a; border-radius: 14px; padding: 1.2rem 1.5rem; margin-bottom: 1.2rem; border-left: 6px solid #10b981; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 800; font-size: 1.2rem; color: #047857;">💚 Physician-Grade Clinical Assessment</span>
+            <span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 0.35rem 0.85rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">
+                Cholesterol: {int(chol)} mg/dL | Max HR: {int(thalach)} bpm
+            </span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Render structured markdown report
+    st.markdown(report_output)
+
 # Page configuration - Wide layout for SaaS Landing Page & Dashboard aesthetic
 st.set_page_config(
     page_title="CardioCare AI | Agentic Clinical Decision Support",
@@ -475,25 +497,10 @@ with col_right:
                     
                     report_output = run_clinical_analysis(chol=chol, thalach=thalach)
                     
-                    status.update(label="✅ Analysis Complete!", state="complete", expanded=False)
+                    status.update(label="✅ Analysis Complete! Opening Report Modal...", state="complete", expanded=False)
                     
-                    # Display Visual Gauge Chart (Plotly Indicator)
-                    gauge_fig = create_risk_gauge_chart(diag_prediction)
-                    st.plotly_chart(gauge_fig, use_container_width=True)
-                    
-                    # Display Result Header & Badge
-                    st.markdown(f"""
-                    <div class="result-box">
-                        <div class="result-header">
-                            <div class="result-title">💚 Physician-Grade Clinical Assessment Report</div>
-                            <div class="result-tag">Cholesterol: {int(chol)} mg/dL | Max HR: {int(thalach)} bpm</div>
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    
-                    # Render structured markdown cleanly inside a crisp white card
-                    with st.container():
-                        st.markdown(report_output)
+                    # Open centered popup modal with Gauge Chart & Report
+                    show_report_modal(chol, thalach, diag_prediction, report_output)
                     
                 except Exception as e:
                     status.update(label="❌ Analysis Encountered an Error", state="error")
