@@ -1,6 +1,70 @@
 import os
 import streamlit as st
+import plotly.graph_objects as go
 from dotenv import load_dotenv
+
+def create_risk_gauge_chart(risk_level: str):
+    """
+    Creates a visual Gauge Chart using plotly.graph_objects (go.Indicator).
+    - HIGH RISK -> value 85
+    - LOW RISK -> value 15
+    - Transparent background (paper_bgcolor & plot_bgcolor = rgba(0,0,0,0))
+    - Deep purple and subtle neon-lit accents matching the glassmorphism dark aesthetic.
+    """
+    is_high_risk = "HIGH" in str(risk_level).upper()
+    gauge_val = 85 if is_high_risk else 15
+    
+    # Deep purple and neon accent colors
+    gauge_bar_color = "#9333ea" if is_high_risk else "#10b981"
+    accent_glow_color = "#c084fc" if is_high_risk else "#34d399"
+    status_label = "HIGH RISK" if is_high_risk else "LOW RISK"
+    
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=gauge_val,
+        number={
+            'suffix': "%", 
+            'font': {'size': 42, 'color': '#ffffff', 'family': 'Plus Jakarta Sans, sans-serif'}
+        },
+        title={
+            'text': f"<b>DIAGNOSTIC RISK SCORE: {status_label}</b>", 
+            'font': {'size': 16, 'color': accent_glow_color, 'family': 'Plus Jakarta Sans, sans-serif'}
+        },
+        gauge={
+            'axis': {
+                'range': [0, 100], 
+                'tickwidth': 1, 
+                'tickcolor': "#64748b", 
+                'tickfont': {'color': '#94a3b8', 'size': 11}
+            },
+            'bar': {
+                'color': gauge_bar_color, 
+                'thickness': 0.35
+            },
+            'bgcolor': "rgba(15, 23, 42, 0.6)",
+            'borderwidth': 1.5,
+            'bordercolor': "rgba(168, 85, 247, 0.3)",
+            'steps': [
+                {'range': [0, 30], 'color': 'rgba(16, 185, 129, 0.18)'},
+                {'range': [30, 70], 'color': 'rgba(168, 85, 247, 0.15)'},
+                {'range': [70, 100], 'color': 'rgba(239, 68, 68, 0.18)'}
+            ],
+            'threshold': {
+                'line': {'color': accent_glow_color, 'width': 4},
+                'thickness': 0.75,
+                'value': gauge_val
+            }
+        }
+    ))
+
+    fig.update_layout(
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font={'color': "#f8fafc", 'family': "Plus Jakarta Sans, sans-serif"},
+        height=240,
+        margin=dict(l=20, r=20, t=40, b=10)
+    )
+    return fig
 
 # Page configuration - Wide layout for SaaS Landing Page & Dashboard aesthetic
 st.set_page_config(
@@ -399,7 +463,11 @@ with col_right:
             with st.status("🧬 Analyzing patient parameters with AI agents...", expanded=True) as status:
                 try:
                     status.write("🧠 Diagnostic Agent: Executing ML Classifier...")
+                    from tools import predict_heart_disease
                     from crew_logic import run_clinical_analysis
+                    
+                    # Execute Diagnostic prediction directly for instant visual gauge chart
+                    diag_prediction = predict_heart_disease.func(chol, thalach)
                     
                     status.write("📚 Reporting Agent: Querying ChromaDB RAG Guidelines...")
                     status.write("✍️ Synthesizing Empathetic Clinical Report...")
@@ -408,6 +476,10 @@ with col_right:
                     report_output = run_clinical_analysis(chol=chol, thalach=thalach)
                     
                     status.update(label="✅ Analysis Complete!", state="complete", expanded=False)
+                    
+                    # Display Visual Gauge Chart (Plotly Indicator)
+                    gauge_fig = create_risk_gauge_chart(diag_prediction)
+                    st.plotly_chart(gauge_fig, use_container_width=True)
                     
                     # Display Result Header & Badge
                     st.markdown(f"""
