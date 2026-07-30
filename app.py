@@ -356,10 +356,15 @@ st.markdown("""
         font-size: 0.95rem !important;
     }
 
-    /* Universal Button Height & Alignment Sync */
+    /* Ultra-Specific Synchronized Button Styling for Streamlit */
+    div[data-testid="stButton"] > button,
+    button[data-testid="baseButton-secondary"],
+    button[data-testid="baseButton-primary"],
     div.stButton > button {
         height: 52px !important;
         min-height: 52px !important;
+        max-height: 52px !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-weight: 700 !important;
         font-size: 0.95rem !important;
         border-radius: 14px !important;
@@ -370,31 +375,45 @@ st.markdown("""
         justify-content: center !important;
         transition: all 0.25s ease-in-out !important;
         margin-top: 0.8rem !important;
+        box-sizing: border-box !important;
     }
 
-    /* Primary Action Button (Run Clinical Analysis) */
-    div.stButton > button:not([disabled]) {
+    /* Left Column Button: Run Clinical Analysis (Vibrant Mint Gradient) */
+    div[data-testid="stColumn"]:nth-of-type(1) div[data-testid="stButton"] > button,
+    div[data-testid="stColumn"]:first-child div[data-testid="stButton"] > button {
         background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%) !important;
         color: #061510 !important;
         border: none !important;
-        box-shadow: 0 6px 20px rgba(0, 230, 118, 0.35) !important;
+        box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4) !important;
         cursor: pointer !important;
     }
 
-    div.stButton > button:not([disabled]):hover {
+    div[data-testid="stColumn"]:nth-of-type(1) div[data-testid="stButton"] > button:hover,
+    div[data-testid="stColumn"]:first-child div[data-testid="stButton"] > button:hover {
         background: linear-gradient(135deg, #00f080 0%, #00e5ff 100%) !important;
-        box-shadow: 0 8px 25px rgba(0, 230, 118, 0.5) !important;
+        box-shadow: 0 8px 25px rgba(0, 230, 118, 0.6) !important;
         transform: translateY(-2px) !important;
     }
 
-    /* Disabled / Secondary Button (View Assessment Report before first run) */
-    div.stButton > button[disabled] {
-        background: rgba(255, 255, 255, 0.04) !important;
-        color: #64748b !important;
-        border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+    /* Right Column Button: View Assessment Report (Active State) */
+    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button:not([disabled]),
+    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button:not([disabled]) {
+        background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%) !important;
+        color: #061510 !important;
+        border: none !important;
+        box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4) !important;
+        cursor: pointer !important;
+    }
+
+    /* Right Column Button: View Assessment Report (Disabled / Placeholder State) */
+    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button[disabled],
+    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button[disabled] {
+        background: rgba(255, 255, 255, 0.06) !important;
+        color: #94a3b8 !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
         box-shadow: none !important;
         cursor: not-allowed !important;
-        opacity: 0.8 !important;
+        opacity: 0.85 !important;
     }
 
     /* Result Metric Display Card (White & Dark Glass) */
