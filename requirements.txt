@@ -9,3 +9,4 @@ scikit-learn
 python-dotenv
 plotly
 reportlab
+pypdf
