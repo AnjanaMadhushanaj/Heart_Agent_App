@@ -3,6 +3,7 @@ import streamlit as st
 import plotly.graph_objects as go
 from dotenv import load_dotenv
 from pdf_generator import generate_clinical_pdf
+from tools import predict_heart_disease, extract_text_from_file, extract_vitals_from_text
 
 def create_risk_gauge_chart(risk_level: str):
     """
@@ -103,11 +104,14 @@ def show_report_modal(chol: float, thalach: float, diag_prediction: str, report_
 
 # Page configuration - Wide layout for SaaS Landing Page & Dashboard aesthetic
 st.set_page_config(
-    page_title="CardioCare AI | Agentic Clinical Decision Support",
+    page_title="CardioCare AI | Lab Report Analysis System",
     page_icon="❤️",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
+# Load environment keys
+load_dotenv()
 
 # Custom CSS for SaaS Dark-Grey + Crisp White + Neon Mint Green Aesthetic (MediClaim AI style)
 st.markdown("""
@@ -149,7 +153,6 @@ st.markdown("""
         font-size: 1.4rem;
         font-weight: 800;
         color: #ffffff;
-        letter-spacing: -0.5px;
     }
 
     .nav-logo-icon {
@@ -160,26 +163,6 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 2rem;
-        align-items: center;
-        font-size: 0.95rem;
-        color: #94a3b8;
-        font-weight: 500;
-    }
-
-    .nav-badge {
-        background: linear-gradient(135deg, rgba(0, 230, 118, 0.2) 0%, rgba(0, 176, 255, 0.2) 100%);
-        border: 1px solid rgba(0, 230, 118, 0.5);
-        color: #00e676;
-        font-size: 0.8rem;
-        font-weight: 700;
-        padding: 0.35rem 0.9rem;
-        border-radius: 20px;
-        letter-spacing: 0.5px;
     }
 
     /* Left Hero Column Styling */
@@ -198,7 +181,7 @@ st.markdown("""
     }
 
     .hero-title {
-        font-size: 3.4rem;
+        font-size: 3.2rem;
         font-weight: 800;
         line-height: 1.15;
         color: #ffffff;
@@ -214,138 +197,12 @@ st.markdown("""
     }
 
     .hero-description {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         color: #94a3b8;
         line-height: 1.6;
-        margin-bottom: 2rem;
+        margin-bottom: 1.8rem;
         max-width: 540px;
         font-weight: 400;
-    }
-
-    /* Pumping Blood Heart Animation Container */
-    .hero-animation-box {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 16px;
-        padding: 1.2rem 1.6rem;
-        margin-bottom: 2rem;
-        max-width: 500px;
-    }
-
-    .heart-pulse-container {
-        position: relative;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .heart-pulse-icon {
-        font-size: 2.5rem;
-        z-index: 2;
-        animation: heartPump 1.2s infinite ease-in-out;
-        filter: drop-shadow(0 0 15px rgba(0, 230, 118, 0.6));
-    }
-
-    .pulse-ring {
-        position: absolute;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: rgba(0, 230, 118, 0.3);
-        animation: pulseRipple 1.8s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-        z-index: 1;
-    }
-
-    .pulse-ring-delay {
-        animation-delay: 0.6s;
-    }
-
-    @keyframes heartPump {
-        0% { transform: scale(1); }
-        14% { transform: scale(1.2); }
-        28% { transform: scale(1); }
-        42% { transform: scale(1.15); }
-        70% { transform: scale(1); }
-        100% { transform: scale(1); }
-    }
-
-    @keyframes pulseRipple {
-        0% { transform: scale(0.8); opacity: 0.8; }
-        80%, 100% { transform: scale(2.2); opacity: 0; }
-    }
-
-    .animation-text-main {
-        font-weight: 700;
-        color: #ffffff;
-        font-size: 1rem;
-    }
-
-    .animation-text-sub {
-        font-size: 0.85rem;
-        color: #00e676;
-        font-weight: 500;
-    }
-
-    /* Feature Checkmarks */
-    .feature-list {
-        display: flex;
-        gap: 1.8rem;
-        margin-bottom: 2rem;
-    }
-
-    .feature-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.9rem;
-        color: #cbd5e1;
-        font-weight: 500;
-    }
-
-    .check-icon {
-        color: #00e676;
-        font-weight: 800;
-    }
-
-    /* Right Column - SaaS Dashboard Card */
-    .dashboard-card {
-        background: rgba(15, 23, 42, 0.75);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(0, 230, 118, 0.25);
-        border-radius: 24px;
-        padding: 2.2rem;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 
-                    0 0 30px rgba(0, 230, 118, 0.1);
-    }
-
-    .card-header-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-    }
-
-    .card-title {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #ffffff;
-    }
-
-    .status-pill {
-        background: rgba(0, 230, 118, 0.12);
-        color: #00e676;
-        border: 1px solid rgba(0, 230, 118, 0.3);
-        font-size: 0.75rem;
-        font-weight: 700;
-        padding: 0.25rem 0.75rem;
-        border-radius: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
     }
 
     /* Glass Input Card Container */
@@ -362,13 +219,12 @@ st.markdown("""
     }
 
     /* Number Input Label Styling */
-    div[data-testid="stNumberInput"] label {
+    div[data-testid="stNumberInput"] label, .stFileUploader label {
         color: #f8fafc !important;
         font-weight: 700 !important;
         font-size: 0.95rem !important;
         margin-bottom: 0.5rem !important;
         padding-top: 0.4rem !important;
-        letter-spacing: -0.2px !important;
     }
 
     /* Input Field Outer Container */
@@ -409,7 +265,7 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* Refined Compact Button Styling - Synchronized & Theme Aligned */
+    /* Refined Button Styling - Synchronized & Theme Aligned */
     div[data-testid="stButton"] > button,
     button[data-testid="baseButton-secondary"],
     button[data-testid="baseButton-primary"],
@@ -431,7 +287,7 @@ st.markdown("""
         box-sizing: border-box !important;
     }
 
-    /* Primary Action Button: Run Clinical Analysis (Vibrant Neon Mint Gradient) */
+    /* Primary Action Button: Run Clinical Analysis */
     div[data-testid="stColumn"]:nth-of-type(1) div[data-testid="stButton"] > button,
     div[data-testid="stColumn"]:first-child div[data-testid="stButton"] > button {
         background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%) !important;
@@ -448,7 +304,7 @@ st.markdown("""
         transform: translateY(-1px) !important;
     }
 
-    /* Secondary Action Button: View Assessment Report (Active State - Cloned Mint Gradient) */
+    /* Secondary Action Button: View Assessment Report */
     div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button:not([disabled]),
     div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button:not([disabled]) {
         background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%) !important;
@@ -465,15 +321,6 @@ st.markdown("""
         transform: translateY(-1px) !important;
     }
 
-    /* Secondary Action Button: View Assessment Report (Disabled / Initial State) */
-    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button[disabled],
-    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button[disabled] {
-        background: rgba(255, 255, 255, 0.03) !important;
-        color: #64748b !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        box-shadow: none !important;
-        cursor: not-allowed !important;
-        opacity: 0.65 !important;
     /* Download PDF Button Styling */
     div.stDownloadButton > button {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
@@ -495,48 +342,6 @@ st.markdown("""
         box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5) !important;
         transform: translateY(-2px) !important;
     }
-
-    /* Result Metric Display Card (White & Dark Glass) */
-    .result-box {
-        background: #ffffff;
-        color: #0f172a;
-        border-radius: 18px;
-        padding: 1.8rem;
-        margin-top: 1.5rem;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-        border: 2px solid #00e676;
-    }
-
-    .result-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid #e2e8f0;
-        padding-bottom: 0.8rem;
-    }
-
-    .result-title {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: #059669;
-    }
-
-    .result-tag {
-        background: #ecfdf5;
-        color: #047857;
-        font-size: 0.8rem;
-        font-weight: 700;
-        padding: 0.3rem 0.8rem;
-        border-radius: 20px;
-        border: 1px solid #a7f3d0;
-    }
-
-    .result-body {
-        font-size: 1.02rem;
-        line-height: 1.65;
-        color: #334155;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -550,43 +355,80 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Load environment keys
-load_dotenv()
+# Initialize Session State Values for Vitals
+if "chol_val" not in st.session_state:
+    st.session_state["chol_val"] = 245.0
+if "thalach_val" not in st.session_state:
+    st.session_state["thalach_val"] = 142.0
 
 # Split Hero & Dashboard Layout
 col_left, col_right = st.columns([1.15, 1], gap="large")
 
 with col_left:
     st.markdown("""
-    <div class="hero-pill">⚡ AI-Powered Clinical Decision System</div>
+    <div class="hero-pill">⚡ Patient-Friendly Lab Report Interpreter</div>
     <div class="hero-title">
-        Accurate Heart Risk Analysis with <span class="hero-highlight">Agentic AI</span>
+        Understand Your Lab Reports with <span class="hero-highlight">Agentic AI</span>
     </div>
     <div class="hero-description">
-        Advanced AI-powered cardiovascular intelligence designed to assist clinical decision-making. Our system evaluates key patient vitals against verified medical guidelines to deliver accurate, empathetic, and physician-grade heart health assessments.
+        Upload your lab report or select a sample report below. Our multi-agent AI system parses medical vitals, evaluates health risk flags, and translates complex medical jargon into clear, patient-friendly health guidance.
     </div>
     """, unsafe_allow_html=True)
+    
+    st.markdown("<div style='font-size: 0.9rem; font-weight: 700; color: #a78bfa; margin-bottom: 0.6rem;'>📋 Quick Test Sample Lab Reports:</div>", unsafe_allow_html=True)
+    sample_col1, sample_col2 = st.columns(2)
+    with sample_col1:
+        if st.button("⚠️ High Risk Lab Sample", key="sample_high_btn"):
+            st.session_state["chol_val"] = 265.0
+            st.session_state["thalach_val"] = 130.0
+            st.toast("Loaded High Risk Sample: Cholesterol=265 mg/dL, Max HR=130 bpm")
+            st.rerun()
+
+    with sample_col2:
+        if st.button("✅ Normal Vitals Lab Sample", key="sample_normal_btn"):
+            st.session_state["chol_val"] = 185.0
+            st.session_state["thalach_val"] = 165.0
+            st.toast("Loaded Normal Vitals Sample: Cholesterol=185 mg/dL, Max HR=165 bpm")
+            st.rerun()
 
 with col_right:
+    # File Uploader
+    uploaded_file = st.file_uploader(
+        "Upload Patient Lab Report (PDF / TXT)",
+        type=["pdf", "txt"],
+        help="Upload a PDF or TXT lab report file to automatically extract patient vitals."
+    )
+
+    if uploaded_file is not None:
+        file_text = extract_text_from_file(uploaded_file)
+        if file_text:
+            extracted = extract_vitals_from_text(file_text)
+            st.session_state["chol_val"] = extracted["chol"]
+            st.session_state["thalach_val"] = extracted["thalach"]
+            st.success(f"📄 Report Parsed Successfully! Cholesterol: {int(extracted['chol'])} mg/dL, Max HR: {int(extracted['thalach'])} bpm")
+
     input_col1, input_col2 = st.columns(2)
     with input_col1:
         chol = st.number_input(
             "Total Cholesterol (mg/dL)",
             min_value=50.0,
             max_value=600.0,
-            value=245.0,
+            value=float(st.session_state["chol_val"]),
             step=1.0,
             help="Normal is below 200 mg/dL. High risk is classified above 240 mg/dL."
         )
+        st.session_state["chol_val"] = chol
+
     with input_col2:
         thalach = st.number_input(
             "Max Heart Rate (bpm)",
             min_value=50.0,
             max_value=250.0,
-            value=142.0,
+            value=float(st.session_state["thalach_val"]),
             step=1.0,
             help="Expected range during exercise testing is 60 to 200 bpm."
         )
+        st.session_state["thalach_val"] = thalach
     
     # Action buttons arranged side-by-side
     btn_col1, btn_col2 = st.columns(2)
@@ -607,7 +449,6 @@ with col_right:
             with st.status("🧬 Analyzing patient parameters with AI agents...", expanded=True) as status:
                 try:
                     status.write("🧠 Diagnostic Agent: Executing ML Classifier...")
-                    from tools import predict_heart_disease
                     from crew_logic import run_clinical_analysis
                     
                     # Execute Diagnostic prediction directly for instant visual gauge chart

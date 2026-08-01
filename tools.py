@@ -1,3 +1,6 @@
+import re
+import io
+import pypdf
 import joblib
 import pandas as pd
 from crewai.tools import tool
@@ -31,3 +34,50 @@ def predict_heart_disease(chol: float, thalach: float) -> str:
             return "Low Risk"
     except Exception as e:
         return f"Error running prediction: {str(e)}"
+
+def extract_text_from_file(uploaded_file) -> str:
+    """Extracts text from an uploaded PDF or TXT file."""
+    try:
+        if uploaded_file.name.lower().endswith(".pdf"):
+            reader = pypdf.PdfReader(io.BytesIO(uploaded_file.read()))
+            text = ""
+            for page in reader.pages:
+                extracted = page.extract_text()
+                if extracted:
+                    text += extracted + "\n"
+            return text
+        else:
+            return uploaded_file.read().decode("utf-8", errors="ignore")
+    except Exception as e:
+        return ""
+
+def extract_vitals_from_text(text: str) -> dict:
+    """
+    Extracts Total Cholesterol and Max Heart Rate from unstructured lab report text using regex pattern matching.
+    """
+    results = {"chol": 245.0, "thalach": 142.0}
+    
+    if not text:
+        return results
+        
+    # Search for cholesterol patterns: e.g., "Cholesterol: 260 mg/dL" or "Chol: 245"
+    chol_match = re.search(r'(?:cholesterol|chol)\D*(\d{2,3}(?:\.\d+)?)', text, re.IGNORECASE)
+    if chol_match:
+        try:
+            val = float(chol_match.group(1))
+            if 50.0 <= val <= 600.0:
+                results["chol"] = val
+        except ValueError:
+            pass
+
+    # Search for max heart rate patterns: e.g., "Max Heart Rate: 135 bpm" or "Thalach: 140"
+    hr_match = re.search(r'(?:max\s*heart\s*rate|thalach|heart\s*rate|hr)\D*(\d{2,3}(?:\.\d+)?)', text, re.IGNORECASE)
+    if hr_match:
+        try:
+            val = float(hr_match.group(1))
+            if 50.0 <= val <= 250.0:
+                results["thalach"] = val
+        except ValueError:
+            pass
+
+    return results
