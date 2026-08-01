@@ -399,36 +399,27 @@ with col_right:
         help="Upload a PDF or TXT lab report file to automatically extract patient vitals."
     )
 
+    chol = float(st.session_state.get("chol_val", 245.0))
+    thalach = float(st.session_state.get("thalach_val", 142.0))
+
     if uploaded_file is not None:
         file_text = extract_text_from_file(uploaded_file)
         if file_text:
             extracted = extract_vitals_from_text(file_text)
-            st.session_state["chol_val"] = extracted["chol"]
-            st.session_state["thalach_val"] = extracted["thalach"]
-            st.success(f"📄 Report Parsed Successfully! Cholesterol: {int(extracted['chol'])} mg/dL, Max HR: {int(extracted['thalach'])} bpm")
-
-    input_col1, input_col2 = st.columns(2)
-    with input_col1:
-        chol = st.number_input(
-            "Total Cholesterol (mg/dL)",
-            min_value=50.0,
-            max_value=600.0,
-            value=float(st.session_state["chol_val"]),
-            step=1.0,
-            help="Normal is below 200 mg/dL. High risk is classified above 240 mg/dL."
-        )
-        st.session_state["chol_val"] = chol
-
-    with input_col2:
-        thalach = st.number_input(
-            "Max Heart Rate (bpm)",
-            min_value=50.0,
-            max_value=250.0,
-            value=float(st.session_state["thalach_val"]),
-            step=1.0,
-            help="Expected range during exercise testing is 60 to 200 bpm."
-        )
-        st.session_state["thalach_val"] = thalach
+            chol = extracted["chol"]
+            thalach = extracted["thalach"]
+            st.session_state["chol_val"] = chol
+            st.session_state["thalach_val"] = thalach
+            st.success(f"📄 Report Parsed Successfully! Cholesterol: {int(chol)} mg/dL, Max HR: {int(thalach)} bpm")
+    else:
+        st.markdown(f"""
+        <div style="background: rgba(0, 230, 118, 0.08); border: 1px solid rgba(0, 230, 118, 0.3); border-radius: 12px; padding: 0.85rem 1.2rem; margin-bottom: 1.2rem;">
+            <div style="font-size: 0.82rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Active Patient Lab Vitals:</div>
+            <div style="font-size: 1.05rem; color: #00e676; font-weight: 700; margin-top: 0.2rem;">
+                Total Cholesterol: {int(chol)} mg/dL &nbsp;|&nbsp; Max Heart Rate: {int(thalach)} bpm
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     
     # Action buttons arranged side-by-side
     btn_col1, btn_col2 = st.columns(2)
