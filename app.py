@@ -5,13 +5,13 @@ from dotenv import load_dotenv
 from pdf_generator import generate_clinical_pdf
 from tools import extract_text_from_file
 
-@st.dialog("🧪 Health care AI — Patient Health Guidance Report", width="large")
+@st.dialog("🏥 Physician-Grade Health Guidance Assessment", width="large")
 def show_report_modal(report_text_name: str, report_output: str):
     """Centered popup modal displaying the structured lab analysis report."""
     st.markdown(f"""
     <div style="background: #ffffff; color: #0f172a; border-radius: 14px; padding: 1.2rem 1.5rem; margin-bottom: 1.2rem; border-left: 6px solid #10b981; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: 800; font-size: 1.2rem; color: #047857;">🧪 Health care AI — Patient Educational Guidance</span>
+            <span style="font-weight: 800; font-size: 1.2rem; color: #047857;">🏥 Physician-Grade Health Guidance</span>
             <span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 0.35rem 0.85rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">
                 Source: {report_text_name}
             </span>
@@ -232,12 +232,12 @@ col_left, col_right = st.columns([1.15, 1], gap="large")
 
 with col_left:
     st.markdown("""
-    <div class="hero-pill">⚡ Multi-Agent RAG Medical Guidance</div>
+    <div class="hero-pill">⚡ Instant Patient-Friendly Health Intelligence</div>
     <div class="hero-title">
-        Health care AI: General Lab Report <span class="hero-highlight">Interpreter & Educator</span>
+        Understand Your Lab Results in <span class="hero-highlight">Plain English</span>
     </div>
     <div class="hero-description">
-        Upload any medical lab report (PDF or TXT) to receive clear, patient-friendly guidance. Our 4-agent AI system extracts lab data, queries reference guidelines, translates complex jargon, and strictly ensures safe, educational insights without making medical diagnoses.
+        Upload your medical lab report (PDF or TXT) to instantly decode complex clinical findings. Receive physician-grade health summaries, standard reference range analysis, and clear next steps tailored for you and your family.
     </div>
     """, unsafe_allow_html=True)
 
