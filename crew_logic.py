@@ -1,67 +1,78 @@
 from crewai import Task, Crew, Process
-
-# Import agents
-from agents import diagnostic_agent, reporting_agent, critique_agent
-
-# 1. Diagnostic Task
-diagnostic_task = Task(
-    description=(
-        "Analyze the patient's cholesterol level ({chol} mg/dL) and maximum heart rate achieved ({thalach} bpm) "
-        "using the 'Heart Disease Predictor' tool. Provide an objective risk assessment stating whether the patient "
-        "is classified as High Risk or Low Risk based on the machine learning model's output."
-    ),
-    expected_output="A clear, objective risk assessment indicating the risk level (High Risk or Low Risk).",
-    agent=diagnostic_agent
+from agents import (
+    extraction_agent,
+    analyzer_agent,
+    translator_agent,
+    guardrail_agent
 )
 
-# 2. Reporting Task
-reporting_task = Task(
+# 1. Extraction Task
+extraction_task = Task(
     description=(
-        "Using the patient's clinical inputs (Cholesterol: {chol} mg/dL, Max Heart Rate: {thalach} bpm) and "
-        "the diagnostic risk assessment from the Diagnostic Agent, retrieve relevant clinical guidelines "
-        "using the 'Medical Guidelines Retriever' tool. Synthesize these inputs into a structured, highly professional, "
-        "and patient-friendly medical report.\n\n"
-        "Format the report clearly using markdown with the following structure:\n"
+        "Parse the provided lab report content:\n"
+        "'''\n{lab_text}\n'''\n"
+        "Extract all measured lab parameters, numerical values, units of measurement, and patient indicators. "
+        "Output a clean, structured summary of the raw lab data."
+    ),
+    expected_output="A structured summary listing extracted lab parameters, measured values, and units.",
+    agent=extraction_agent
+)
+
+# 2. Medical Analyzer Task (RAG)
+analyzer_task = Task(
+    description=(
+        "Using the extracted lab data from the Extraction Agent, query the 'Medical Guidelines Retriever' tool "
+        "in ChromaDB to find standard reference ranges for each measured parameter (e.g. cholesterol, glucose, CBC, liver/kidney markers). "
+        "Identify parameters that are normal, borderline, or out-of-bounds (elevated or low)."
+    ),
+    expected_output="An analysis detailing which lab parameters fall outside standard reference ranges with their associated clinical guidelines.",
+    agent=analyzer_agent
+)
+
+# 3. Plain-English Translator Task
+translator_task = Task(
+    description=(
+        "Take the lab findings and out-of-bounds metrics from the Medical Analyzer Agent and translate them "
+        "into a structured, highly compassionate, patient-friendly guidance report without medical jargon.\n\n"
+        "Format using clear markdown with the following structure:\n"
         "### 🏥 Executive Summary\n"
-        "A warm, empathetic opening stating the overall risk assessment and reassurance.\n\n"
-        "### 📊 Vitals & Diagnostic Analysis\n"
-        "Explain what {chol} mg/dL cholesterol and {thalach} bpm max heart rate mean in plain English without confusing jargon.\n\n"
+        "A warm, supportive opening summarizing overall lab findings and reassuring the patient.\n\n"
+        "### 📊 Lab Vitals & Reference Analysis\n"
+        "Explain what each measured value means in plain English compared to standard reference ranges.\n\n"
         "### 💡 Evidence-Based Lifestyle & Health Guidance\n"
-        "Provide 3-4 bulleted, actionable lifestyle, dietary, and exercise recommendations derived directly from the retrieved guidelines.\n\n"
+        "3-4 actionable dietary, exercise, and wellness recommendations based on the guidelines.\n\n"
         "### 🩺 Recommended Next Steps\n"
-        "Clear, supportive advice on routine monitoring and consulting their physician."
+        "Encouraging guidance on discussing results with their physician."
     ),
-    expected_output="A beautifully structured markdown clinical report with clear headings, bullet points, and plain English explanations.",
-    agent=reporting_agent
+    expected_output="A compassionate, beautifully formatted markdown patient educational report.",
+    agent=translator_agent
 )
 
-# 3. Critique Task (Self-Critique/Reflection Pattern)
-critique_task = Task(
+# 4. Clinical Guardrail Task (Reviewer / Safety Auditor)
+guardrail_task = Task(
     description=(
-        "Review the drafted medical report. Ensure that:\n"
-        "1. It follows the 4 structured markdown sections (Executive Summary, Vitals & Diagnostic Analysis, Evidence-Based Guidance, Recommended Next Steps).\n"
-        "2. All medical jargon is translated into simple, compassionate English that any layperson can easily understand.\n"
-        "3. The tone is highly professional, non-alarmist, and supportive.\n"
-        "4. The recommendations strictly match the retrieved guidelines.\n\n"
-        "Refine and format the final text cleanly."
+        "Review the drafted patient report to strictly enforce clinical safety and non-diagnostic guardrails:\n"
+        "1. Ensure NO definitive medical diagnosis is rendered (do NOT state 'you have disease X').\n"
+        "2. Confirm all medical jargon is translated into simple, accessible English.\n"
+        "3. Verify that the report explicitly reminds the patient that this guidance is educational and directs them to consult a qualified physician for clinical diagnosis.\n\n"
+        "Output the audited, final guidance report."
     ),
-    expected_output="The finalized, beautifully formatted markdown clinical report.",
-    agent=critique_agent
+    expected_output="The finalized, audited markdown patient educational report that strictly complies with non-diagnostic safety guardrails.",
+    agent=guardrail_agent
 )
 
-# Assemble the Crew
-clinical_crew = Crew(
-    agents=[diagnostic_agent, reporting_agent, critique_agent],
-    tasks=[diagnostic_task, reporting_task, critique_task],
+# Assemble 4-Agent Sequential Crew
+clearlab_crew = Crew(
+    agents=[extraction_agent, analyzer_agent, translator_agent, guardrail_agent],
+    tasks=[extraction_task, analyzer_task, translator_task, guardrail_task],
     process=Process.sequential,
     verbose=True
 )
 
-def run_clinical_analysis(chol: float, thalach: float) -> str:
-    """Kicks off the clinical decision support crew with patient inputs."""
+def run_lab_analysis(lab_text: str) -> str:
+    """Executes 4-agent RAG workflow on lab report text input."""
     inputs = {
-        "chol": chol,
-        "thalach": thalach
+        "lab_text": lab_text
     }
-    result = clinical_crew.kickoff(inputs=inputs)
+    result = clearlab_crew.kickoff(inputs=inputs)
     return str(result)
