@@ -1,117 +1,239 @@
-# Health care AI — Universal Multi-Lingual Lab Report Interpreter
+# Health care AI — Multi-Agent RAG Lab Report Interpreter
 
-[![Live Application](https://img.shields.io/badge/Live%20Application-Streamlit%20Cloud-00e676?style=for-the-badge&logo=streamlit)](https://ajrpsmr5lmxcw95mppisvq.streamlit.app/)
+Health care AI is an assignment-grade multi-agent intelligent system that interprets medical lab reports (PDF and TXT formats) against standard clinical reference guidelines and generates compassionate, patient-friendly guidance in **English**, **සිංහල (Sinhala)**, and **தமிழ் (Tamil)**.
 
-> **Live Web Application URL**: [https://ajrpsmr5lmxcw95mppisvq.streamlit.app/](https://ajrpsmr5lmxcw95mppisvq.streamlit.app/)
+[Live demo](https://ajrpsmr5lmxcw95mppisvq.streamlit.app/) · [Repository](https://github.com/AnjanaMadhushanaj/Heart_Agent_App) · [Local setup](#setup) · [Deploy checklist](#streamlit-cloud-deploy)
 
-Health care AI is an intelligent, multi-agent medical assistance system that translates complex clinical lab reports (PDF and TXT formats) into clear, compassionate, patient-friendly health guidance in English, Sinhala (සිංහල), and Tamil (தமிழ்). Built with a Multi-Agent RAG (Retrieval-Augmented Generation) architecture using CrewAI, ChromaDB, and Streamlit, Health care AI empowers patients to decode their medical lab results instantly without jargon while strictly enforcing safety guardrails against rendering automated diagnoses.
-
----
-
-## Key System Features
-
-* Multi-Lingual Guidance Engine (English, Sinhala, Tamil): Generates personalized, compassionate clinical guidance in English, සිංහල (Sinhala), or தமிழ் (Tamil) at the user's choice.
-* Universal Lab Report File Extractor: Accepts PDF and TXT laboratory files (lipid panels, CBC, blood glucose, kidney/liver markers, thyroid panels) and extracts raw clinical values.
-* ChromaDB Vector Store RAG Pipeline: Queries standard medical reference guidelines stored in ChromaDB using local ONNX embeddings (ONNXMiniLM_L6_V2) to identify out-of-range lab metrics.
-* 4-Agent Sequential CrewAI Orchestration: Employs four specialized AI agents communicating in a structured pipeline.
-* Clinical Guardrail & Non-Diagnostic Safety: Audits output to ensure NO medical diagnosis is made, strictly providing educational summaries and recommending direct doctor consultation.
-* Neon Mint Green & Cyan Gradient UI: High-end Streamlit web dashboard with glassmorphism aesthetics and interactive modal report popups (st.dialog).
-* Physician-Grade PDF Report Generator: Generates formatted, downloadable PDF summaries using ReportLab.
+Deployed on Streamlit Community Cloud — see the [Live demo](#live-demo) section.
 
 ---
 
-## Multi-Agent Architecture
+## Table of contents
+- [What it does](#what-it-does)
+- [How it works](#how-it-works)
+- [Agentic design patterns](#agentic-design-patterns)
+- [Architecture](#architecture)
+- [Agent communication](#agent-communication)
+- [Model choice](#model-choice)
+- [RAG pipeline](#rag-pipeline)
+- [RAG evaluation](#rag-evaluation)
+- [Setup](#setup)
+- [Streamlit Cloud deploy](#streamlit-cloud-deploy)
+- [Live demo](#live-demo)
+- [Project layout](#project-layout)
+- [Known limitations](#known-limitations)
+- [Student Information](#student-information)
+
+---
+
+## What it does
+Health care AI (repo: `Heart_Agent_App`) is an intelligent system designed to bridge the gap between technical clinical lab reports and patient comprehension. When a user uploads a medical laboratory report (such as lipid panels, complete blood count, blood glucose, liver/kidney markers, or thyroid panels), the system extracts measured values, queries verified medical reference ranges in a persistent vector database, translates findings into the user's preferred language, and enforces non-diagnostic clinical safety guardrails.
+
+---
+
+## How it works
+1. **Upload & Extract**: You upload a PDF or TXT lab report in the Streamlit UI.
+2. **Lab Data Extraction**: A specialized Extraction Agent parses raw text, parameter names, numerical values, and units.
+3. **Medical Guidelines RAG Query**: A Pathologist/Analyzer Agent uses a RAG retrieval tool to query ChromaDB for standard clinical reference ranges.
+4. **Multi-Lingual Translation**: A Medical Translator Agent translates out-of-bounds metrics and complex medical jargon into clear, compassionate explanations in **English**, **සිංහල (Sinhala)**, or **தமிழ் (Tamil)**.
+5. **Clinical Guardrail Audit**: A Compliance Reviewer Agent audits the report to strictly enforce that **NO medical diagnosis is rendered** and directs doctor consultation.
+6. **Interactive Presentation & PDF Export**: The Streamlit UI opens a popup modal with the structured guidance and provides a downloadable physician-grade PDF report.
+
+---
+
+## Agentic design patterns
+
+| Pattern | Where in codebase | Role & Implementation |
+| :--- | :--- | :--- |
+| **Orchestrator-Worker** | [crew_logic.py](https://github.com/AnjanaMadhushanaj/Heart_Agent_App/blob/main/crew_logic.py) | Sequential process orchestrates Extraction → Analyzer → Translator → Guardrail workers in a structured execution flow. |
+| **ReAct & Tool Use** | [agents/agent_definitions.py](https://github.com/AnjanaMadhushanaj/Heart_Agent_App/blob/main/agents/agent_definitions.py) | Medical Analyzer Agent executes ReAct reasoning using the `Medical Guidelines Retriever` tool to query ChromaDB. |
+| **Multi-Lingual Translation & Reflection** | [crew_logic.py](https://github.com/AnjanaMadhushanaj/Heart_Agent_App/blob/main/crew_logic.py) | Translator Agent breaks down medical jargon into natural English, Sinhala, or Tamil while structuring findings into 4 key sections. |
+| **Safety Guardrails & Compliance Auditing** | [agents/agent_definitions.py](https://github.com/AnjanaMadhushanaj/Heart_Agent_App/blob/main/agents/agent_definitions.py) | Guardrail Agent audits output to eliminate diagnostic language and enforce physician consultation disclaimers. |
+
+---
+
+## Architecture
+
+End-to-end system view of the 4-agent sequential RAG pipeline:
 
 ```mermaid
 graph TD
-    User([Uploaded Lab Report: PDF / TXT]) --> UI[Health care AI Streamlit UI]
-    UI -->|Language Selection & Raw Text| Agent1[1. Lab Data Extraction Agent]
+    User([Uploaded Lab Report: PDF / TXT]) --> UI[Streamlit UI Dashboard]
+    UI -->|Language Choice & Text| Agent1[1. Lab Data Extraction Agent]
     
     subgraph Multi-Agent RAG Core
         Agent1 -->|Extracted Parameters| Agent2[2. Medical Reference Analyzer Agent]
-        Agent2 -->|Queries Reference Ranges| RAG[(ChromaDB Vector Store)]
+        Agent2 -->|ReAct Query| RAG[(ChromaDB Vector Store)]
         RAG -->|Standard Reference Context| Agent2
-        Agent2 -->|Anomalies & Lab Findings| Agent3[3. Multi-Lingual Translator Agent]
-        Agent3 -->|Draft Guidance: English / Sinhala / Tamil| Agent4[4. Clinical Safety Guardrail Agent]
-        Agent4 -->|Audited Report: Non-Diagnostic| FinalReport[Final Educational Patient Report]
+        Agent2 -->|Lab Anomalies & Ranges| Agent3[3. Multi-Lingual Translator Agent]
+        Agent3 -->|Draft Guidance: EN / SI / TA| Agent4[4. Clinical Safety Guardrail Agent]
+        Agent4 -->|Audited Educational Report| FinalReport[Final Patient Report]
     end
     
     FinalReport --> UI
     FinalReport --> PDF[ReportLab PDF Engine]
 ```
 
-### Specialized Agent Roles & Responsibilities
+### Component Map
 
-| Agent Role | Model Provider | Key Responsibility |
+| Path | Role |
+| :--- | :--- |
+| `app.py` | Streamlit single-page UI dashboard, language selector, modal popup, PDF generator link |
+| `agents/agent_definitions.py` | CrewAI agent definitions (Extraction, Analyzer, Translator, Guardrail) |
+| `crew_logic.py` | CrewAI tasks, sequential workflow orchestration, multi-lingual prompt variables |
+| `tools.py` | File text extraction (`pypdf` + TXT helper) |
+| `rag_setup.py` | ChromaDB vector store initialization, embeddings, retrieval tool |
+| `medical_corpus.txt` | Ground truth medical reference guidelines corpus |
+| `pdf_generator.py` | ReportLab PDF document generator engine |
+
+---
+
+## Agent communication
+
+Agents never pass raw unstructured strings — every hand-off uses explicit task definitions in `crew_logic.py`.
+
+| Sequence | Producer → Consumer | Data Payload & Purpose |
 | :--- | :--- | :--- |
-| **1. Lab Data Extraction Agent** | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | Parses uploaded PDF/TXT files and structures raw numerical lab metrics, parameter names, and units. |
-| **2. Medical Reference Analyzer Agent** | `openrouter/google/gemma-2-9b-it:free` | Queries ChromaDB RAG vector store for clinical reference ranges and categorizes parameters (normal, borderline, high, low). |
-| **3. Multi-Lingual Translator Agent** | `openrouter/google/gemma-2-9b-it:free` | Translates technical lab findings into clear, compassionate 4-section guidance in the chosen target language (English, Sinhala, or Tamil). |
-| **4. Clinical Safety Guardrail Agent** | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | Audits the final draft report to strictly enforce that NO medical diagnosis is rendered and directs doctor consultation. |
+| **Step 1** | UI → Extraction Agent | Raw lab report text (PDF/TXT) |
+| **Step 2** | Extraction Agent → Analyzer Agent | Structured lab parameters, values, and units |
+| **Step 3** | Analyzer Agent → RAG Retriever | Search query for standard reference ranges |
+| **Step 4** | RAG Retriever → Analyzer Agent | Verified clinical reference range chunks |
+| **Step 5** | Analyzer Agent → Translator Agent | Identified out-of-bounds parameters & health flags |
+| **Step 6** | Translator Agent → Guardrail Agent | Draft guidance report in target language (EN/SI/TA) |
+| **Step 7** | Guardrail Agent → UI | Audited, compliant educational report |
 
 ---
 
-## RAG Knowledge Base Pipeline
+## Model choice
 
-The RAG pipeline is powered by ChromaDB and medical_corpus.txt, containing standard clinical reference ranges for:
-- Lipid Panels: Total Cholesterol, LDL, HDL, Triglycerides.
-- Glycemic Markers: Fasting Blood Glucose, Hemoglobin A1c (HbA1c).
-- Complete Blood Count (CBC): Hemoglobin, White Blood Cell Count (WBC), Platelet Count.
-- Renal & Hepatic Panels: Serum Creatinine, Blood Urea Nitrogen (BUN), ALT, AST.
-- Thyroid Function: Thyroid Stimulating Hormone (TSH).
+Default routing targets verified free-tier OpenRouter models for zero rate limit bottlenecks and high token throughput.
 
-### Ingestion Execution:
+| Task / Agent | Model Slug | Provider | Cost | Context Window | Reason for Choice |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Lab Data Extraction** | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | OpenRouter | Free | 128K | Fast, accurate structured data parsing |
+| **Medical Reference Analyzer** | `openrouter/google/gemma-2-9b-it:free` | OpenRouter | Free | 128K | Reliable tool calling for ChromaDB RAG queries |
+| **Multi-Lingual Translator** | `openrouter/google/gemma-2-9b-it:free` | OpenRouter | Free | 128K | Excellent multi-lingual translation in Sinhala & Tamil |
+| **Clinical Safety Guardrail** | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | OpenRouter | Free | 128K | High-precision compliance auditing |
+
+---
+
+## RAG pipeline
+
+Verification is corpus-grounded against verified medical reference ranges, not live web search.
+
+### Ingestion (Offline / Dev)
+- **Corpus**: `medical_corpus.txt` containing 21 standard medical lab reference guidelines (Lipids, Glucose, CBC, Kidney, Liver, Thyroid).
+- **Embeddings**: `ONNXMiniLM_L6_V2` via sentence-transformers / Chroma embeddings.
+- **Storage**: Persisted ChromaDB collection in `.chroma/` (committed for zero-config deployment).
+
+### Runtime Retrieval
+1. Analyzer Agent formats parameter queries (e.g. *"What is the standard reference range for total cholesterol?"*).
+2. `get_rag_tool()` embeds the query and searches ChromaDB for matching guidelines.
+3. Relevant guidelines feed the ReAct analyzer prompt to categorize values into normal, borderline, or elevated.
+
+---
+
+## RAG evaluation
+
+Mandatory retrieval check against the medical reference knowledge base (`medical_corpus.txt`, ONNX embeddings).
+
+| Query | Top Source | Relevant? | Clinical Notes |
+| :--- | :--- | :--- | :--- |
+| **What is the normal range for Total Cholesterol?** | `medical_corpus.txt` | Yes | Matched Lipid Panel guidelines (< 200 mg/dL normal) |
+| **What is the Fasting Blood Sugar threshold for Diabetes?** | `medical_corpus.txt` | Yes | Matched Glycemic guidelines (>= 126 mg/dL indicative) |
+| **What is the adult normal Hemoglobin range?** | `medical_corpus.txt` | Yes | Matched CBC guidelines (13.8-17.2 g/dL male, 12.1-15.1 female) |
+| **What are normal Serum Creatinine levels?** | `medical_corpus.txt` | Yes | Matched Renal Panel guidelines (0.7-1.3 mg/dL) |
+| **What is the normal range for TSH (Thyroid)?** | `medical_corpus.txt` | Yes | Matched Thyroid Function guidelines (0.4-4.0 mIU/L) |
+
+---
+
+## Setup
+
+### Prerequisites
+- Python 3.10 or 3.11
+- OpenRouter / Groq API Key
+
+### Install and run
 ```bash
-python rag_setup.py
-```
-This script embeds medical_corpus.txt using ONNXMiniLM_L6_V2 into a persistent ChromaDB vector database located in .chroma/.
-
----
-
-## Core Git Branching Strategy
-
-Our development repository strictly enforces 6 core feature branches aligned with university guidelines:
-
-1. feature/ui-generalization — Streamlit UI cleanup, Health care AI branding, multi-lingual language selector, and neon mint green/cyan gradient glassmorphism styling.
-2. feature/file-extraction — PDF (pypdf) and TXT raw text parsing helper functions (tools.py).
-3. feature/rag-knowledge-base — ChromaDB vector store initialization and reference range ingestion (rag_setup.py).
-4. feature/multi-agent-orchestration — CrewAI 4-Agent sequential workflow & multi-lingual translation logic (agents/ & crew_logic.py).
-5. feature/guardrails-and-safety — Clinical safety reviewer auditing non-diagnostic constraints.
-6. docs/readme-overhaul — System documentation, multi-lingual specifications, and setup guide.
-
----
-
-## Quickstart & Setup Guide
-
-### 1. Clone & Prerequisites
-```bash
+# 1. Clone repository
 git clone https://github.com/AnjanaMadhushanaj/Heart_Agent_App.git
 cd Heart_Agent_App
-```
 
-### 2. Install Dependencies
-```bash
+# 2. Create virtual environment
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+
+# 3. Install dependencies
 pip install -r requirements.txt
-```
 
-### 3. Configure API Keys (.env)
-Create a .env file in the root directory:
-```env
+# 4. Environment configuration (.env)
 GROQ_API_KEY=your_groq_api_key_here
 OPENROUTER_API_KEY=your_openrouter_api_key_here
-```
 
-### 4. Initialize RAG Vector Store
-```bash
+# 5. Initialize vector store
 python rag_setup.py
-```
 
-### 5. Launch Application
-```bash
+# 6. Launch Streamlit UI
 streamlit run app.py
 ```
 
 ---
 
-## Medical Disclaimer
-Health care AI is an educational technology demonstration. It provides general educational explanations of medical laboratory reference ranges and does NOT provide medical advice, diagnosis, or treatment. Patients must always consult a qualified healthcare professional regarding any medical condition or lab result.
+## Streamlit Cloud deploy
+
+Checklist to satisfy live-demo deployment requirements:
+1. Push `main` to GitHub (`https://github.com/AnjanaMadhushanaj/Heart_Agent_App`).
+2. Open [share.streamlit.io](https://share.streamlit.io/) → New app → Select repository → Main file path: `app.py`.
+3. In **Advanced settings → Secrets**, add:
+   ```toml
+   GROQ_API_KEY = "your_groq_api_key_here"
+   OPENROUTER_API_KEY = "your_openrouter_api_key_here"
+   ```
+4. Deploy and confirm live URL: [https://ajrpsmr5lmxcw95mppisvq.streamlit.app/](https://ajrpsmr5lmxcw95mppisvq.streamlit.app/)
+
+---
+
+## Live demo
+- **Live Demo App**: [https://ajrpsmr5lmxcw95mppisvq.streamlit.app/](https://ajrpsmr5lmxcw95mppisvq.streamlit.app/)
+- **Repository**: [https://github.com/AnjanaMadhushanaj/Heart_Agent_App](https://github.com/AnjanaMadhushanaj/Heart_Agent_App)
+
+---
+
+## Project layout
+
+```text
+Heart_Agent_App/
+├── app.py                     # Streamlit web UI dashboard
+├── agents/                    # 4-Agent CrewAI definitions
+│   ├── __init__.py
+│   └── agent_definitions.py
+├── crew_logic.py              # Sequential workflow & multi-lingual tasks
+├── tools.py                   # PDF/TXT text extraction tools
+├── rag_setup.py               # ChromaDB vector store manager
+├── medical_corpus.txt         # Medical reference guidelines corpus
+├── pdf_generator.py           # ReportLab clinical PDF engine
+├── sample_lab_reports/        # Sample lab report PDFs for testing
+├── requirements.txt           # Python package dependencies
+├── README.md                  # System documentation
+└── .chroma/                   # Persisted ChromaDB vector database
+```
+
+---
+
+## Known limitations
+1. **Educational Scope**: System provides general reference range explanations and does NOT render automated medical diagnoses.
+2. **Corpus Scope**: RAG retrieval is grounded in pre-ingested clinical reference guidelines (`medical_corpus.txt`).
+3. **Payload Truncation**: Uploaded text is capped at 2,500 characters to optimize response latency and prevent token limits.
+4. **Single-Page UI**: Analysis reports are generated per session and can be re-opened via the "View Saved Report" modal.
+
+---
+
+## Student Information
+
+- **Student Name**: I.M.A.M.Bandara Ilankoon
+- **Student ID**: ITBIN-2313-0040
+- **Module**: IT41043 Intelligent Systems
+- **Project**: Multi-Agent RAG Medical Lab Report Interpreter & Educator
