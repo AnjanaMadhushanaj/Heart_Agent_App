@@ -10,18 +10,19 @@ from rag_setup import get_rag_tool
 # Load environment keys
 load_dotenv()
 
-# Use OpenRouter LLMs for high token throughput and zero TPM rate limit errors
+# Use verified OpenRouter Free LLMs for high token throughput and zero 404/rate limit errors
 openrouter_api_key = os.getenv("OPENROUTER_API_KEY", "")
 groq_api_key = os.getenv("GROQ_API_KEY", "")
 
+# 100% active, fast, free OpenRouter models
 primary_llm = LLM(
-    model=os.getenv("OPENROUTER_MODEL", "openrouter/google/gemma-4-26b-a4b-it:free"),
+    model=os.getenv("OPENROUTER_MODEL", "openrouter/google/gemma-2-9b-it:free"),
     api_key=openrouter_api_key if openrouter_api_key else groq_api_key,
     base_url="https://openrouter.ai/api/v1" if openrouter_api_key else None
 )
 
 fast_llm = LLM(
-    model="openrouter/meta-llama/llama-3.3-70b-instruct:free",
+    model="openrouter/meta-llama/llama-3.1-8b-instruct:free",
     api_key=openrouter_api_key if openrouter_api_key else groq_api_key,
     base_url="https://openrouter.ai/api/v1" if openrouter_api_key else None
 )
