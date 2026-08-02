@@ -305,8 +305,8 @@ with col_right:
                         st.error(f"An error occurred during agent execution: {str(e)}")
 
     if reopen_analysis:
-        if st.session_state.get("last_report") is not None:
-            last = st.session_state["last_report"]
-            show_report_modal(last["file_name"], last["report_output"], last.get("language", "English"))
+        last = st.session_state.get("last_report")
+        if last and isinstance(last, dict) and last.get("report_output"):
+            show_report_modal(last.get("file_name", "Uploaded File"), last.get("report_output", ""), last.get("language", "English"))
         else:
             st.info("ℹ️ Please click **'🔍 Analyze Lab Report →'** first to generate your guidance report!")
