@@ -160,17 +160,37 @@ Default routing targets verified free-tier OpenRouter models for zero rate limit
 
 ## RAG pipeline
 
-Verification is corpus-grounded against verified medical reference ranges, not live web search.
+Verification is corpus-grounded against verified medical reference ranges, not live web search. The Medical Analyzer Agent calls a retrieve tool; evidence comes from a pre-built Chroma vector index over clinical guidelines.
 
 ### Ingestion (Offline / Dev)
-- **Corpus**: `medical_corpus.txt` containing 21 standard medical lab reference guidelines (Lipids, Glucose, CBC, Kidney, Liver, Thyroid).
-- **Embeddings**: `ONNXMiniLM_L6_V2` via sentence-transformers / Chroma embeddings.
-- **Storage**: Persisted ChromaDB collection in `.chroma/` (committed for zero-config deployment).
+
+1. **Corpus** — Plain text clinical guidelines in `medical_corpus.txt` (Lipids, Glucose, CBC, Kidney/Liver, Thyroid).
+2. **Chunking** — Structured guideline line-based character text splitters.
+3. **Embeddings** — `ONNXMiniLM_L6_V2` dense retrieval vectors via `chromadb.utils.embedding_functions`.
+4. **Storage** — Persisted Chroma collection in `.chroma/` (`medical_guidelines` collection, committed for zero-config deploy).
 
 ### Runtime Retrieval
-1. Analyzer Agent formats parameter queries (e.g. *"What is the standard reference range for total cholesterol?"*).
-2. `get_rag_tool()` embeds the query and searches ChromaDB for matching guidelines.
-3. Relevant guidelines feed the ReAct analyzer prompt to categorize values into normal, borderline, or elevated.
+
+1. Medical Analyzer Agent formats an extracted lab metric parameter as a natural-language query.
+2. `get_rag_tool()` embeds the query using `ONNXMiniLM_L6_V2` and searches ChromaDB for matching reference guidelines.
+3. Distance similarity metrics convert to relevance scores; matching guideline chunks are retrieved.
+4. Retrieved guidelines feed the Pathologist/Analyzer prompt to evaluate whether values fall within normal, borderline, or elevated ranges.
+5. Evaluated findings are passed to the Multi-Lingual Translator Agent for patient guidance synthesis.
+
+### RAG Data Flow Architecture
+
+```mermaid
+graph LR
+    Corpus[medical_corpus.txt] --> Chunking[Guideline Text Chunking]
+    Chunking --> Embeddings[ONNXMiniLM_L6_V2 Embeddings]
+    Embeddings --> Storage[(Persisted ChromaDB Collection: .chroma/)]
+    
+    Query[Extracted Parameter Query] --> EmbedQuery[ONNX Vector Search]
+    EmbedQuery --> Storage
+    Storage --> Results[Top Guideline Chunks]
+    Results --> Analyzer[Medical Reference Analyzer Agent]
+    Analyzer --> Verdict[Evaluated Metrics: Normal / Elevated / Low]
+```
 
 ---
 
