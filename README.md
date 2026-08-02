@@ -1,11 +1,12 @@
-# ❤️ Health care AI — General Lab Report Interpreter & Educator
+# ❤️ Health care AI — Universal Multi-Lingual Lab Report Interpreter
 
-**Health care AI** is an intelligent, multi-agent medical assistance system that translates complex clinical lab reports (PDF and TXT formats) into clear, compassionate, patient-friendly health guidance. Built with a **Multi-Agent RAG (Retrieval-Augmented Generation)** architecture using **CrewAI**, **ChromaDB**, and **Streamlit**, Health care AI empowers patients to understand their lab results without medical jargon while strictly enforcing safety guardrails against rendering automated diagnoses.
+**Health care AI** is an intelligent, multi-agent medical assistance system that translates complex clinical lab reports (PDF and TXT formats) into clear, compassionate, patient-friendly health guidance in **English**, **Sinhala (සිංහල)**, and **Tamil (தமிழ்)**. Built with a **Multi-Agent RAG (Retrieval-Augmented Generation)** architecture using **CrewAI**, **ChromaDB**, and **Streamlit**, Health care AI empowers patients to decode their medical lab results instantly without jargon while strictly enforcing safety guardrails against rendering automated diagnoses.
 
 ---
 
 ## 🌟 Key System Features
 
+* 🌐 **Multi-Lingual Guidance Engine (English, Sinhala, Tamil)**: Generates personalized, compassionate clinical guidance in **English**, **සිංහල (Sinhala)**, or **தமிழ் (Tamil)** at the user's choice.
 * 📄 **Universal Lab Report File Extractor**: Accepts PDF and TXT laboratory files (lipid panels, CBC, blood glucose, kidney/liver markers, thyroid panels) and extracts raw clinical values.
 * 📚 **ChromaDB Vector Store RAG Pipeline**: Queries standard medical reference guidelines stored in ChromaDB using local ONNX embeddings (`ONNXMiniLM_L6_V2`) to identify out-of-range lab metrics.
 * 🤖 **4-Agent Sequential CrewAI Orchestration**: Employs four specialized AI agents communicating in a structured pipeline.
@@ -20,14 +21,14 @@
 ```mermaid
 graph TD
     User([Uploaded Lab Report: PDF / TXT]) --> UI[Health care AI Streamlit UI]
-    UI -->|Raw Text| Agent1[1. Lab Data Extraction Agent]
+    UI -->|Language Selection & Raw Text| Agent1[1. Lab Data Extraction Agent]
     
     subgraph Multi-Agent RAG Core
         Agent1 -->|Extracted Parameters| Agent2[2. Medical Reference Analyzer Agent]
         Agent2 -->|Queries Reference Ranges| RAG[(ChromaDB Vector Store)]
         RAG -->|Standard Reference Context| Agent2
-        Agent2 -->|Anomalies & Lab Findings| Agent3[3. Plain-English Translator Agent]
-        Agent3 -->|Draft Patient Guidance| Agent4[4. Clinical Safety Guardrail Agent]
+        Agent2 -->|Anomalies & Lab Findings| Agent3[3. Multi-Lingual Translator Agent]
+        Agent3 -->|Draft Guidance: English / Sinhala / Tamil| Agent4[4. Clinical Safety Guardrail Agent]
         Agent4 -->|Audited Report: Non-Diagnostic| FinalReport[Final Educational Patient Report]
     end
     
@@ -41,7 +42,7 @@ graph TD
 | :--- | :--- | :--- |
 | **1. Lab Data Extraction Agent** | `groq/llama-3.1-8b-instant` | Parses uploaded PDF/TXT files and structures raw numerical lab metrics, parameter names, and units. |
 | **2. Medical Reference Analyzer Agent** | `openrouter/google/gemma-4-26b-a4b-it:free` | Queries ChromaDB RAG vector store for clinical reference ranges and categorizes parameters (normal, borderline, high, low). |
-| **3. Plain-English Translator Agent** | `openrouter/google/gemma-4-26b-a4b-it:free` | Translates technical lab findings into clear, compassionate 4-section patient guidance without clinical jargon. |
+| **3. Multi-Lingual Translator Agent** | `openrouter/google/gemma-4-26b-a4b-it:free` | Translates technical lab findings into clear, compassionate 4-section guidance in the chosen target language (**English, Sinhala, or Tamil**). |
 | **4. Clinical Safety Guardrail Agent** | `groq/llama-3.1-8b-instant` | Audits the final draft report to strictly enforce that **NO medical diagnosis is rendered** and directs doctor consultation. |
 
 ---
@@ -63,16 +64,16 @@ This script embeds `medical_corpus.txt` using `ONNXMiniLM_L6_V2` into a persiste
 
 ---
 
-## 🌿 Git Branching Strategy
+## 🌿 Core Git Branching Strategy
 
-Our development repository strictly enforces feature branching aligned with university guidelines:
+Our development repository strictly enforces 6 core feature branches aligned with university guidelines:
 
-1. `feature/ui-generalization` — Streamlit UI cleanup, rebranding to Health care AI, and neon mint green/cyan gradient glassmorphism styling.
+1. `feature/ui-generalization` — Streamlit UI cleanup, Health care AI branding, multi-lingual language selector, and neon mint green/cyan gradient glassmorphism styling.
 2. `feature/file-extraction` — PDF (`pypdf`) and TXT raw text parsing helper functions (`tools.py`).
 3. `feature/rag-knowledge-base` — ChromaDB vector store initialization and reference range ingestion (`rag_setup.py`).
-4. `feature/multi-agent-orchestration` — CrewAI 4-Agent sequential workflow (`agents/` & `crew_logic.py`).
+4. `feature/multi-agent-orchestration` — CrewAI 4-Agent sequential workflow & multi-lingual translation logic (`agents/` & `crew_logic.py`).
 5. `feature/guardrails-and-safety` — Clinical safety reviewer auditing non-diagnostic constraints.
-6. `docs/readme-overhaul` — Project documentation and architecture specification.
+6. `docs/readme-overhaul` — System documentation, multi-lingual specifications, and setup guide.
 
 ---
 
