@@ -1,8 +1,8 @@
 # Health care AI — Universal Multi-Lingual Lab Report Interpreter
 
-[![Live Application](https://img.shields.io/badge/Live%20Application-Streamlit%20Cloud-00e676?style=for-the-badge&logo=streamlit)](https://heart-agent-app.streamlit.app)
+[![Live Application](https://img.shields.io/badge/Live%20Application-Streamlit%20Cloud-00e676?style=for-the-badge&logo=streamlit)](https://ajrpsmr5lmxcw95mppisvq.streamlit.app/)
 
-> **Live Web Application URL**: [https://heart-agent-app.streamlit.app](https://heart-agent-app.streamlit.app)
+> **Live Web Application URL**: [https://ajrpsmr5lmxcw95mppisvq.streamlit.app/](https://ajrpsmr5lmxcw95mppisvq.streamlit.app/)
 
 Health care AI is an intelligent, multi-agent medical assistance system that translates complex clinical lab reports (PDF and TXT formats) into clear, compassionate, patient-friendly health guidance in English, Sinhala (සිංහල), and Tamil (தமிழ்). Built with a Multi-Agent RAG (Retrieval-Augmented Generation) architecture using CrewAI, ChromaDB, and Streamlit, Health care AI empowers patients to decode their medical lab results instantly without jargon while strictly enforcing safety guardrails against rendering automated diagnoses.
 
