@@ -1,145 +1,112 @@
-# CardioCare AI: Clinical Decision Support System (CDSS)
+# 🧪 ClearLab AI — General Lab Report Interpreter & Educator
 
-An Agentic Clinical Decision Support System designed for the Horizon Campus module **IT41043 — Intelligent Systems (Agentic AI)**. This system combines machine learning risk prediction with a Retrieval-Augmented Generation (RAG) medical knowledge base, a multi-agent reflection loop, interactive Plotly diagnostic gauge visualization, and automated PDF clinical report export to deliver safe, empathetic, and evidence-guided healthcare intelligence.
-
----
-
-## 🌟 Key Features
-
-- **Predictive ML Risk Analytics**: Employs a pre-trained Random Forest Classifier (`heart_disease_optimized_model.pkl`) to assess patient risk from raw vitals (`Total Cholesterol` & `Max Exercise Heart Rate`).
-- **Cardiology RAG Pipeline**: Grounded on a local ChromaDB vector store loaded with 20+ peer-reviewed cardiology guidelines and clinical protocols.
-- **Multi-Agent Orchestration & Reflection**: Combines diagnostic, reporting, and critique agents (`CrewAI`) utilizing high-speed LLM model routing (`Llama 3.1 8B Instant` on Groq & `Gemma 4 26B Instruct` on OpenRouter).
-- **Interactive Plotly Risk Gauge Score**: Visual gauge indicator (`plotly.graph_objects.Indicator`) displaying patient risk level immediately upon analysis.
-- **Centered Assessment Report Modal Dialog**: Interactive popup modal (`st.dialog`) displaying patient vitals, diagnostic risk level, gauge score, and full structured clinical assessment.
-- **Official Physician-Grade PDF Export**: Built-in PDF report generation engine (`reportlab`) allowing patients and clinicians to download formal PDF assessment reports with one click.
-- **Premium Glassmorphic UI Aesthetics**: Modern Streamlit interface utilizing dark glass containers, vibrant neon mint green accents (`#00e676`), and symmetrical side-by-side action buttons.
+**ClearLab AI** is an intelligent, multi-agent medical assistance system that translates complex clinical lab reports (PDF and TXT formats) into clear, compassionate, patient-friendly health guidance. Built with a **Multi-Agent RAG (Retrieval-Augmented Generation)** architecture using **CrewAI**, **ChromaDB**, and **Streamlit**, ClearLab AI empowers patients to understand their lab results without medical jargon while strictly enforcing safety guardrails against rendering automated diagnoses.
 
 ---
 
-## 🏛️ System Architecture
+## 🌟 Key System Features
 
-The following diagram illustrates the flow of patient data through the system, highlighting the ML predictions, ChromaDB RAG lookup, multi-agent reflection process, Plotly gauge score rendering, and ReportLab PDF document export.
+* 📄 **Universal Lab Report File Extractor**: Accepts PDF and TXT laboratory files (lipid panels, CBC, blood glucose, kidney/liver markers, thyroid panels) and extracts raw clinical values.
+* 📚 **ChromaDB Vector Store RAG Pipeline**: Queries standard medical reference guidelines stored in ChromaDB using local ONNX embeddings (`ONNXMiniLM_L6_V2`) to identify out-of-range lab metrics.
+* 🤖 **4-Agent Sequential CrewAI Orchestration**: Employs four specialized AI agents communicating in a structured pipeline.
+* 🛡️ **Clinical Guardrail & Non-Diagnostic Safety**: Audits output to ensure **NO medical diagnosis is made**, strictly providing educational summaries and recommending direct doctor consultation.
+* 🎨 **Deep-Purple Glassmorphism UI**: High-end Streamlit web dashboard with interactive modal report popups (`st.dialog`).
+* 📥 **Physician-Grade PDF Report Generator**: Generates formatted, downloadable PDF summaries using ReportLab.
+
+---
+
+## 🏗️ Multi-Agent Architecture
 
 ```mermaid
 graph TD
-    User([Patient Inputs: Cholesterol, Max HR]) --> Streamlit[Streamlit UI & Glass Dashboard]
-    Streamlit -->|Triggers CrewAI| DiagnosticTask[Diagnostic Task]
+    User([Uploaded Lab Report: PDF / TXT]) --> UI[ClearLab AI Streamlit UI]
+    UI -->|Raw Text| Agent1[1. Lab Data Extraction Agent]
     
-    subgraph Agentic System
-        DiagnosticTask -->|Uses Tool| PredictorTool[Heart Disease Predictor Tool]
-        PredictorTool -->|Loads Model| MLModel[Random Forest Classifier .pkl]
-        MLModel -->|Predicts Risk Score| DiagnosticAgent[Diagnostic Agent: Llama 3.1 8B on Groq]
-        
-        DiagnosticAgent -->|Outputs Risk Assessment| ReportingTask[Reporting Task]
-        
-        ReportingTask -->|Queries Guidelines| RAGTool[Medical Guidelines Retriever Tool]
-        RAGTool -->|Semantic Search| ChromaDB[ChromaDB Vector Store]
-        ChromaDB -->|Returns Clinical Context| ReportingAgent[Reporting Agent: Gemma 4 26B on OpenRouter]
-        
-        ReportingAgent -->|Drafts 4-Section Structured Report| CritiqueTask[Critique Task]
-        
-        CritiqueTask -->|Audits & Refines| CritiqueAgent[Critique Agent: Llama 3.1 8B on Groq]
-        CritiqueAgent -->|Finalizes Report| FinalReport[Final Plain-English Clinical Assessment]
+    subgraph Multi-Agent RAG Core
+        Agent1 -->|Extracted Parameters| Agent2[2. Medical Reference Analyzer Agent]
+        Agent2 -->|Queries Reference Ranges| RAG[(ChromaDB Vector Store)]
+        RAG -->|Standard Reference Context| Agent2
+        Agent2 -->|Anomalies & Lab Findings| Agent3[3. Plain-English Translator Agent]
+        Agent3 -->|Draft Patient Guidance| Agent4[4. Clinical Safety Guardrail Agent]
+        Agent4 -->|Audited Report: Non-Diagnostic| FinalReport[Final Educational Patient Report]
     end
     
-    FinalReport --> Modal[Centered Popup Modal st.dialog]
-    DiagnosticAgent -->|Triggers| GaugeChart[Plotly Risk Gauge Indicator]
-    GaugeChart --> Modal
-    FinalReport --> PDFEngine[ReportLab PDF Export Engine]
-    PDFEngine -->|Generates PDF Bytes| PDFDownload[📥 Download Official PDF Report]
+    FinalReport --> UI
+    FinalReport --> PDF[ReportLab PDF Engine]
+```
+
+### Specialized Agent Roles & Responsibilities
+
+| Agent Role | Model Provider | Key Responsibility |
+| :--- | :--- | :--- |
+| **1. Lab Data Extraction Agent** | `groq/llama-3.1-8b-instant` | Parses uploaded PDF/TXT files and structures raw numerical lab metrics, parameter names, and units. |
+| **2. Medical Reference Analyzer Agent** | `openrouter/google/gemma-4-26b-a4b-it:free` | Queries ChromaDB RAG vector store for clinical reference ranges and categorizes parameters (normal, borderline, high, low). |
+| **3. Plain-English Translator Agent** | `openrouter/google/gemma-4-26b-a4b-it:free` | Translates technical lab findings into clear, compassionate 4-section patient guidance without clinical jargon. |
+| **4. Clinical Safety Guardrail Agent** | `groq/llama-3.1-8b-instant` | Audits the final draft report to strictly enforce that **NO medical diagnosis is rendered** and directs doctor consultation. |
+
+---
+
+## 📚 RAG Knowledge Base Pipeline
+
+The RAG pipeline is powered by **ChromaDB** and `medical_corpus.txt`, containing standard clinical reference ranges for:
+- **Lipid Panels**: Total Cholesterol, LDL, HDL, Triglycerides.
+- **Glycemic Markers**: Fasting Blood Glucose, Hemoglobin A1c (HbA1c).
+- **Complete Blood Count (CBC)**: Hemoglobin, White Blood Cell Count (WBC), Platelet Count.
+- **Renal & Hepatic Panels**: Serum Creatinine, Blood Urea Nitrogen (BUN), ALT, AST.
+- **Thyroid Function**: Thyroid Stimulating Hormone (TSH).
+
+### Ingestion Execution:
+```bash
+python rag_setup.py
+```
+This script embeds `medical_corpus.txt` using `ONNXMiniLM_L6_V2` into a persistent ChromaDB vector database located in `.chroma/`.
+
+---
+
+## 🌿 Git Branching Strategy
+
+Our development repository strictly enforces feature branching aligned with university guidelines:
+
+1. `feature/ui-generalization` — Streamlit UI cleanup, rebranding to ClearLab AI, and deep purple glassmorphism styling.
+2. `feature/file-extraction` — PDF (`pypdf`) and TXT raw text parsing helper functions (`tools.py`).
+3. `feature/rag-knowledge-base` — ChromaDB vector store initialization and reference range ingestion (`rag_setup.py`).
+4. `feature/multi-agent-orchestration` — CrewAI 4-Agent sequential workflow (`agents/` & `crew_logic.py`).
+5. `feature/guardrails-and-safety` — Clinical safety reviewer auditing non-diagnostic constraints.
+6. `docs/readme-overhaul` — Project documentation and architecture specification.
+
+---
+
+## 🚀 Quickstart & Setup Guide
+
+### 1. Clone & Prerequisites
+```bash
+git clone https://github.com/AnjanaMadhushanaj/Heart_Agent_App.git
+cd Heart_Agent_App
+```
+
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure API Keys (`.env`)
+Create a `.env` file in the root directory:
+```env
+GROQ_API_KEY=your_groq_api_key_here
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+```
+
+### 4. Initialize RAG Vector Store
+```bash
+python rag_setup.py
+```
+
+### 5. Launch Application
+```bash
+streamlit run app.py
 ```
 
 ---
 
-## 🤖 Agentic Design Patterns
-
-This application implements three distinct agentic design patterns, satisfying the mandatory rubric criteria:
-
-| Design Pattern | Implementation Location | Rationale & Description |
-| :--- | :--- | :--- |
-| **1. Tool-Use** | [tools.py](file:///d:/My/My%20Projects/Agentic_Health_System/tools.py) & [agents.py](file:///d:/My/My%20Projects/Agentic_Health_System/agents.py#L20) | The **Diagnostic Agent** is equipped with a custom Python tool that loads a serialized Random Forest model (`heart_disease_optimized_model.pkl`) to execute scientific data classification instead of relying on LLM arithmetic guessing. |
-| **2. RAG / Retrieval** | [rag_setup.py](file:///d:/My/My%20Projects/Agentic_Health_System/rag_setup.py) & [agents.py](file:///d:/My/My%20Projects/Agentic_Health_System/agents.py#L35) | The **Reporting Agent** leverages a custom vector store retriever tool to query ChromaDB for peer-reviewed cardiology guidelines. This guarantees that clinical reports are strictly grounded in WHO and cardiological standards, preventing hallucinations. |
-| **3. Reflection / Self-Critique** | [crew_logic.py](file:///d:/My/My%20Projects/Agentic_Health_System/crew_logic.py#L32) & [agents.py](file:///d:/My/My%20Projects/Agentic_Health_System/agents.py#L50) | The **Critique Agent** acts as an internal medical auditor. It reviews the draft report generated by the Reporting Agent, checks it against safety constraints (ensuring it is non-alarmist, contains actionable lifestyle advice, and maintains 4-section structural guidelines), and outputs a polished final draft. |
-
----
-
-## 📊 Model Selection Strategy
-
-To optimize latency, cost, and reasoning capacity, we deliberately employ a dual-provider model selection strategy:
-
-| Sub-task | Model (Provider) | Why Chosen |
-| :--- | :--- | :--- |
-| **Tabular ML Risk Assessment** | `Llama 3.1 8B Instant` (Groq) | **Ultra-Low Latency & High Speed**: The Diagnostic Agent invokes the ML model tool and summarizes its output. Llama 3.1 8B on Groq offers near-zero latency and high token limits (30,000 TPM). |
-| **Evidence Synthesis & Report Generation** | `Gemma 4 26B Instruct` (OpenRouter) | **High Reasoning Quality & Empathy**: The Reporting Agent synthesizes numerical data, model classifications, and semantic guidelines into a compassionate 4-section narrative. Gemma 4 26B provides superior medical writing quality and safety compliance. |
-| **Report Audit / Self-Critique** | `Llama 3.1 8B Instant` (Groq) | **Refined Verification**: Auditing the report structure and checking safety rules is a straightforward task. Llama 3.1 8B handles this audit instantly. |
-
----
-
-## 🗂️ RAG Integration & Evaluation
-
-### Chunking & Embedding Details
-- **Corpus**: Located in [medical_corpus.txt](file:///d:/My/My%20Projects/Agentic_Health_System/medical_corpus.txt) containing 22 distinct clinical guidelines.
-- **Chunking Strategy**: Line-by-line document split. Each line acts as a stand-alone semantic rule (e.g., target heart rate formulas, cholesterol thresholds, sodium guidelines).
-- **Embedding Model**: Local ONNX MiniLM (`all-MiniLM-L6-v2` running via `onnxruntime`). Runs offline with zero cost, zero latency, and zero remote API dependencies.
-- **Vector Store**: Local `ChromaDB` persistent vector database client.
-
----
-
-## 📄 Official PDF Export Feature
-
-The application includes an integrated ReportLab PDF generation engine ([pdf_generator.py](file:///d:/My/My%20Projects/Agentic_Health_System/pdf_generator.py)):
-- **Custom Document Layout**: Header banner, patient clinical metrics summary table, diagnostic risk classification badge, and structured clinical advice.
-- **One-Click Download**: Embedded directly inside the Streamlit Report Modal and Dashboard via `st.download_button`.
-
----
-
-## ⚙️ Setup & Installation
-
-### Prerequisites
-- Python 3.10 to 3.12.
-- Git.
-
-### Setup Instructions
-
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/AnjanaMadhushanaj/Heart_Agent_App.git
-   cd Heart_Agent_App
-   ```
-
-2. **Set up Environment Variables**:
-   Create a `.env` file in the root directory:
-   ```env
-   GROQ_API_KEY=gsk_your_groq_api_key_here
-   OPENROUTER_API_KEY=sk-or-v1-your_openrouter_api_key_here
-   ```
-
-3. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Initialize ChromaDB RAG Store**:
-   Ingest medical guidelines into ChromaDB:
-   ```bash
-   python rag_setup.py
-   ```
-
-5. **Run Verification Tests**:
-   Verify ML predictions, ChromaDB retrieval, report generation, and PDF export by running:
-   ```bash
-   python test_model.py
-   python test_rag.py
-   python test_report.py
-   python test_pdf.py
-   ```
-
-6. **Run the Streamlit Web Application**:
-   ```bash
-   streamlit run app.py
-   ```
-
----
-
-## 👥 Authors & License
-Developed for **IT41043 — Intelligent Systems (Agentic AI)** | Horizon Campus.
+## 🛡️ Medical Disclaimer
+*ClearLab AI is an educational technology demonstration. It provides general educational explanations of medical laboratory reference ranges and does NOT provide medical advice, diagnosis, or treatment. Patients must always consult a qualified healthcare professional regarding any medical condition or lab result.*
