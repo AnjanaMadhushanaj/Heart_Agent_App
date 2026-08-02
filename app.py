@@ -1,5 +1,6 @@
 import os
 import streamlit as st
+import plotly.graph_objects as go
 from dotenv import load_dotenv
 from pdf_generator import generate_clinical_pdf
 from tools import extract_text_from_file
@@ -8,10 +9,10 @@ from tools import extract_text_from_file
 def show_report_modal(report_text_name: str, report_output: str):
     """Centered popup modal displaying the structured lab analysis report."""
     st.markdown(f"""
-    <div style="background: rgba(30, 20, 50, 0.95); color: #ffffff; border-radius: 14px; padding: 1.2rem 1.5rem; margin-bottom: 1.2rem; border-left: 6px solid #a78bfa; border: 1px solid rgba(167, 139, 250, 0.3); box-shadow: 0 8px 25px rgba(0,0,0,0.4);">
+    <div style="background: #ffffff; color: #0f172a; border-radius: 14px; padding: 1.2rem 1.5rem; margin-bottom: 1.2rem; border-left: 6px solid #10b981; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: 800; font-size: 1.2rem; color: #a78bfa;">🧪 ClearLab AI — Patient Educational Guidance</span>
-            <span style="background: rgba(167, 139, 250, 0.15); color: #c084fc; border: 1px solid rgba(167, 139, 250, 0.4); padding: 0.35rem 0.85rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">
+            <span style="font-weight: 800; font-size: 1.2rem; color: #047857;">🧪 ClearLab AI — Patient Educational Guidance</span>
+            <span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 0.35rem 0.85rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">
                 Source: {report_text_name}
             </span>
         </div>
@@ -26,7 +27,7 @@ def show_report_modal(report_text_name: str, report_output: str):
     # Generate & Download PDF Report
     pdf_bytes = generate_clinical_pdf(0.0, 0.0, "LAB REPORT GUIDANCE", report_output)
     st.download_button(
-        label="📥 Download Patient Guidance Report (PDF)",
+        label="📥 Download Official Assessment Report (PDF)",
         data=pdf_bytes,
         file_name="ClearLab_AI_Patient_Guidance_Report.pdf",
         mime="application/pdf",
@@ -44,17 +45,19 @@ st.set_page_config(
 # Load environment keys
 load_dotenv()
 
-# Modern Deep Purple & Neon Glassmorphism Aesthetic
+# Custom CSS for SaaS Dark-Grey + Crisp White + Neon Mint Green & Cyan Gradient Aesthetic
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     
+    /* Main app background - Dark Matte Charcoal with subtle radial glow */
     .stApp {
-        background: radial-gradient(circle at 80% 20%, #1e1038 0%, #0c071a 60%, #050110 100%);
+        background: radial-gradient(circle at 80% 20%, #0f1c18 0%, #090d14 60%, #05080e 100%);
         color: #f8fafc;
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
+    /* Remove default padding & Streamlit header */
     .block-container {
         padding-top: 1.5rem !important;
         padding-bottom: 3rem !important;
@@ -72,21 +75,21 @@ st.markdown("""
         align-items: center;
         padding: 0.8rem 0;
         margin-bottom: 2rem;
-        border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .nav-logo {
         display: flex;
         align-items: center;
         gap: 0.6rem;
-        font-size: 1.45rem;
+        font-size: 1.4rem;
         font-weight: 800;
         color: #ffffff;
     }
 
     .nav-logo-icon {
-        background: rgba(138, 43, 226, 0.25);
-        border: 1px solid rgba(167, 139, 250, 0.4);
+        background: rgba(0, 230, 118, 0.15);
+        border: 1px solid rgba(0, 230, 118, 0.4);
         border-radius: 10px;
         padding: 0.4rem 0.6rem;
         display: flex;
@@ -94,14 +97,14 @@ st.markdown("""
         justify-content: center;
     }
 
-    /* Left Hero Column */
+    /* Left Hero Column Styling */
     .hero-pill {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        background: rgba(167, 139, 250, 0.12);
-        border: 1px solid rgba(167, 139, 250, 0.35);
-        color: #c084fc;
+        background: rgba(0, 230, 118, 0.08);
+        border: 1px solid rgba(0, 230, 118, 0.3);
+        color: #00e676;
         font-size: 0.85rem;
         font-weight: 600;
         padding: 0.4rem 1rem;
@@ -119,7 +122,8 @@ st.markdown("""
     }
 
     .hero-highlight {
-        background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #8b5cf6 100%);
+        color: #00e676;
+        background: linear-gradient(135deg, #00e676 0%, #38ef7d 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -135,17 +139,17 @@ st.markdown("""
 
     /* Glass Workspace Card Container */
     .glass-card {
-        background: rgba(30, 20, 50, 0.45);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(138, 43, 226, 0.3);
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 230, 118, 0.25);
         border-radius: 20px;
         padding: 2.2rem;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(138, 43, 226, 0.15);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(0, 230, 118, 0.08);
         margin-bottom: 1.5rem;
     }
 
-    /* File Uploader Container */
+    /* File Uploader Label Styling */
     .stFileUploader label {
         color: #f8fafc !important;
         font-weight: 700 !important;
@@ -153,13 +157,13 @@ st.markdown("""
         margin-bottom: 0.5rem !important;
     }
 
-    /* Buttons Styling */
+    /* Refined Button Styling - Synchronized & Theme Aligned */
     div[data-testid="stButton"] > button,
     button[data-testid="baseButton-secondary"],
     button[data-testid="baseButton-primary"],
     div.stButton > button {
-        height: 48px !important;
-        min-height: 48px !important;
+        height: 46px !important;
+        min-height: 46px !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-weight: 700 !important;
         font-size: 0.95rem !important;
@@ -174,40 +178,40 @@ st.markdown("""
         box-sizing: border-box !important;
     }
 
-    /* Primary Action CTA Button */
+    /* Primary Action CTA Button: Cyan/Blue & Neon Mint Gradient */
     div[data-testid="stColumn"] div[data-testid="stButton"] > button {
-        background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%) !important;
-        color: #ffffff !important;
-        border: 1px solid rgba(167, 139, 250, 0.5) !important;
-        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.45) !important;
+        background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%) !important;
+        color: #061510 !important;
+        border: none !important;
+        box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4) !important;
         cursor: pointer !important;
     }
 
     div[data-testid="stColumn"] div[data-testid="stButton"] > button:hover {
-        background: linear-gradient(135deg, #8b5cf6 0%, #5b21b6 100%) !important;
-        box-shadow: 0 6px 28px rgba(139, 92, 246, 0.65) !important;
-        transform: translateY(-2px) !important;
+        background: linear-gradient(135deg, #00f080 0%, #00e5ff 100%) !important;
+        box-shadow: 0 8px 25px rgba(0, 230, 118, 0.6) !important;
+        transform: translateY(-1px) !important;
     }
 
-    /* Download PDF Button */
+    /* Download PDF Button Styling */
     div.stDownloadButton > button {
-        background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%) !important;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
         color: #ffffff !important;
         font-weight: 700 !important;
         font-size: 0.95rem !important;
-        border: 1px solid rgba(167, 139, 250, 0.4) !important;
+        border: none !important;
         border-radius: 12px !important;
         padding: 0.75rem 1.5rem !important;
         width: 100% !important;
-        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35) !important;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35) !important;
         transition: all 0.25s ease-in-out !important;
         cursor: pointer !important;
         margin-top: 0.5rem !important;
     }
 
     div.stDownloadButton > button:hover {
-        background: linear-gradient(135deg, #8b5cf6 0%, #5b21b6 100%) !important;
-        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5) !important;
+        background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5) !important;
         transform: translateY(-2px) !important;
     }
 </style>
