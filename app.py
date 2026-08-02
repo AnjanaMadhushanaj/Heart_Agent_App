@@ -16,7 +16,6 @@ def create_risk_gauge_chart(risk_level: str):
     is_high_risk = "HIGH" in str(risk_level).upper()
     gauge_val = 85 if is_high_risk else 15
     
-    # Deep purple and neon accent colors
     gauge_bar_color = "#9333ea" if is_high_risk else "#10b981"
     accent_glow_color = "#c084fc" if is_high_risk else "#34d399"
     status_label = "HIGH RISK" if is_high_risk else "LOW RISK"
@@ -102,9 +101,9 @@ def show_report_modal(chol: float, thalach: float, diag_prediction: str, report_
         key="modal_pdf_download_btn"
     )
 
-# Page configuration - Wide layout for SaaS Landing Page & Dashboard aesthetic
+# Page configuration
 st.set_page_config(
-    page_title="CardioCare AI | Lab Report Analysis System",
+    page_title="CardioCare AI | Patient Lab Report Interpreter",
     page_icon="❤️",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -113,19 +112,17 @@ st.set_page_config(
 # Load environment keys
 load_dotenv()
 
-# Custom CSS for SaaS Dark-Grey + Crisp White + Neon Mint Green Aesthetic (MediClaim AI style)
+# Clean, Modern CSS for SaaS Lab Report Interpreter Interface
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     
-    /* Main app background - Dark Matte Charcoal with subtle radial glow */
     .stApp {
         background: radial-gradient(circle at 80% 20%, #0f1c18 0%, #090d14 60%, #05080e 100%);
         color: #f8fafc;
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
-    /* Remove default padding & Streamlit header */
     .block-container {
         padding-top: 1.5rem !important;
         padding-bottom: 3rem !important;
@@ -165,7 +162,7 @@ st.markdown("""
         justify-content: center;
     }
 
-    /* Left Hero Column Styling */
+    /* Left Hero Column */
     .hero-pill {
         display: inline-flex;
         align-items: center;
@@ -199,85 +196,32 @@ st.markdown("""
     .hero-description {
         font-size: 1.05rem;
         color: #94a3b8;
-        line-height: 1.6;
+        line-height: 1.65;
         margin-bottom: 1.8rem;
         max-width: 540px;
         font-weight: 400;
     }
 
-    /* Glass Input Card Container */
-    .input-card-container {
-        background: rgba(15, 23, 42, 0.75);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(0, 230, 118, 0.25);
-        border-radius: 20px;
-        padding: 1.8rem 2rem 2.2rem 2rem;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5),
-                    0 0 25px rgba(0, 230, 118, 0.08);
-        margin-bottom: 1.5rem;
-    }
-
-    /* Number Input Label Styling */
-    div[data-testid="stNumberInput"] label, .stFileUploader label {
+    /* File Uploader Container */
+    .stFileUploader label {
         color: #f8fafc !important;
         font-weight: 700 !important;
         font-size: 0.95rem !important;
         margin-bottom: 0.5rem !important;
-        padding-top: 0.4rem !important;
     }
 
-    /* Input Field Outer Container */
-    div[data-testid="stNumberInput"] > div {
-        background-color: rgba(15, 23, 42, 0.65) !important;
-        border: 1px solid rgba(255, 255, 255, 0.18) !important;
-        border-radius: 12px !important;
-        overflow: hidden !important;
-        transition: all 0.25s ease-in-out !important;
-    }
-
-    div[data-testid="stNumberInput"] > div:focus-within {
-        border-color: #00e676 !important;
-        box-shadow: 0 0 15px rgba(0, 230, 118, 0.35) !important;
-        background-color: rgba(15, 23, 42, 0.85) !important;
-    }
-
-    /* Input Text Box */
-    div[data-baseweb="input"] {
-        background-color: transparent !important;
-        border: none !important;
-        color: #ffffff !important;
-        font-weight: 600 !important;
-        font-size: 1rem !important;
-    }
-
-    /* Step Buttons (+ / -) Styling */
-    div[data-testid="stNumberInput"] button {
-        background-color: rgba(255, 255, 255, 0.05) !important;
-        color: #00e676 !important;
-        border: none !important;
-        border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
-        transition: background-color 0.2s ease !important;
-    }
-
-    div[data-testid="stNumberInput"] button:hover {
-        background-color: rgba(0, 230, 118, 0.18) !important;
-        color: #ffffff !important;
-    }
-
-    /* Refined Button Styling - Synchronized & Theme Aligned */
+    /* Buttons Styling */
     div[data-testid="stButton"] > button,
     button[data-testid="baseButton-secondary"],
     button[data-testid="baseButton-primary"],
     div.stButton > button {
-        height: 44px !important;
-        min-height: 44px !important;
-        max-height: 44px !important;
+        height: 46px !important;
+        min-height: 46px !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
-        font-weight: 600 !important;
-        font-size: 0.9rem !important;
-        border-radius: 10px !important;
-        padding: 0.5rem 1rem !important;
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
+        border-radius: 12px !important;
+        padding: 0.6rem 1.2rem !important;
         width: 100% !important;
         display: flex !important;
         align-items: center !important;
@@ -287,7 +231,7 @@ st.markdown("""
         box-sizing: border-box !important;
     }
 
-    /* Primary Action Button: Run Clinical Analysis */
+    /* Primary Action CTA Button */
     div[data-testid="stColumn"]:nth-of-type(1) div[data-testid="stButton"] > button,
     div[data-testid="stColumn"]:first-child div[data-testid="stButton"] > button {
         background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%) !important;
@@ -304,24 +248,7 @@ st.markdown("""
         transform: translateY(-1px) !important;
     }
 
-    /* Secondary Action Button: View Assessment Report */
-    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button:not([disabled]),
-    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button:not([disabled]) {
-        background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%) !important;
-        color: #061510 !important;
-        border: none !important;
-        box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4) !important;
-        cursor: pointer !important;
-    }
-
-    div[data-testid="stColumn"]:nth-of-type(2) div[data-testid="stButton"] > button:not([disabled]):hover,
-    div[data-testid="stColumn"]:last-child div[data-testid="stButton"] > button:not([disabled]):hover {
-        background: linear-gradient(135deg, #00f080 0%, #00e5ff 100%) !important;
-        box-shadow: 0 8px 25px rgba(0, 230, 118, 0.6) !important;
-        transform: translateY(-1px) !important;
-    }
-
-    /* Download PDF Button Styling */
+    /* Download PDF Button */
     div.stDownloadButton > button {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
         color: #ffffff !important;
@@ -371,25 +298,9 @@ with col_left:
         Understand Your Lab Reports with <span class="hero-highlight">Agentic AI</span>
     </div>
     <div class="hero-description">
-        Upload your lab report or select a sample report below. Our multi-agent AI system parses medical vitals, evaluates health risk flags, and translates complex medical jargon into clear, patient-friendly health guidance.
+        Upload your medical lab report (PDF/TXT) to receive instant, physician-grade guidance. Our multi-agent AI system evaluates cardiac vitals, assesses health risk flags, and translates complex clinical jargon into plain-English health insights.
     </div>
     """, unsafe_allow_html=True)
-    
-    st.markdown("<div style='font-size: 0.9rem; font-weight: 700; color: #a78bfa; margin-bottom: 0.6rem;'>📋 Quick Test Sample Lab Reports:</div>", unsafe_allow_html=True)
-    sample_col1, sample_col2 = st.columns(2)
-    with sample_col1:
-        if st.button("⚠️ High Risk Lab Sample", key="sample_high_btn"):
-            st.session_state["chol_val"] = 265.0
-            st.session_state["thalach_val"] = 130.0
-            st.toast("Loaded High Risk Sample: Cholesterol=265 mg/dL, Max HR=130 bpm")
-            st.rerun()
-
-    with sample_col2:
-        if st.button("✅ Normal Vitals Lab Sample", key="sample_normal_btn"):
-            st.session_state["chol_val"] = 185.0
-            st.session_state["thalach_val"] = 165.0
-            st.toast("Loaded Normal Vitals Sample: Cholesterol=185 mg/dL, Max HR=165 bpm")
-            st.rerun()
 
 with col_right:
     # File Uploader
@@ -420,16 +331,26 @@ with col_right:
             </div>
         </div>
         """, unsafe_allow_html=True)
-    
-    # Action buttons arranged side-by-side
-    btn_col1, btn_col2 = st.columns(2)
-    
-    with btn_col1:
-        run_analysis = st.button("Run Clinical Analysis  →", key="run_analysis_btn")
-        
-    with btn_col2:
-        reopen_analysis = st.button("📋 View Assessment Report", key="reopen_report_btn")
-            
+
+    st.markdown("<div style='font-size: 0.85rem; font-weight: 700; color: #a78bfa; margin-bottom: 0.4rem;'>📋 Or Try A Quick Sample Lab Report:</div>", unsafe_allow_html=True)
+    sample_col1, sample_col2 = st.columns(2)
+    with sample_col1:
+        if st.button("⚠️ High Risk Sample", key="sample_high_btn"):
+            st.session_state["chol_val"] = 265.0
+            st.session_state["thalach_val"] = 130.0
+            st.toast("Loaded High Risk Sample: Cholesterol=265 mg/dL, Max HR=130 bpm")
+            st.rerun()
+
+    with sample_col2:
+        if st.button("✅ Normal Vitals Sample", key="sample_normal_btn"):
+            st.session_state["chol_val"] = 185.0
+            st.session_state["thalach_val"] = 165.0
+            st.toast("Loaded Normal Vitals Sample: Cholesterol=185 mg/dL, Max HR=165 bpm")
+            st.rerun()
+
+    st.markdown("<div style='margin-top: 0.8rem;'></div>", unsafe_allow_html=True)
+    run_analysis = st.button("🔍 Analyze Lab Report & Generate Guidance →", key="run_analysis_btn")
+
     if run_analysis:
         g_key = os.environ.get("GROQ_API_KEY", "")
         or_key = os.environ.get("OPENROUTER_API_KEY", "")
@@ -442,7 +363,6 @@ with col_right:
                     status.write("🧠 Diagnostic Agent: Executing ML Classifier...")
                     from crew_logic import run_clinical_analysis
                     
-                    # Execute Diagnostic prediction directly for instant visual gauge chart
                     diag_prediction = predict_heart_disease.func(chol, thalach)
                     
                     status.write("📚 Reporting Agent: Querying ChromaDB RAG Guidelines...")
@@ -467,10 +387,3 @@ with col_right:
                 except Exception as e:
                     status.update(label="❌ Analysis Encountered an Error", state="error")
                     st.error(f"An error occurred during agent execution: {str(e)}")
-
-    if reopen_analysis:
-        if st.session_state.get("last_report") is not None:
-            last = st.session_state["last_report"]
-            show_report_modal(last["chol"], last["thalach"], last["diag_prediction"], last["report_output"])
-        else:
-            st.info("ℹ️ Please click **'Run Clinical Analysis  →'** first to generate your heart assessment report!")
