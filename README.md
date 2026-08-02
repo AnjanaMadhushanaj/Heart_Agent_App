@@ -1,6 +1,6 @@
-# 🧪 ClearLab AI — General Lab Report Interpreter & Educator
+# ❤️ Health care AI — General Lab Report Interpreter & Educator
 
-**ClearLab AI** is an intelligent, multi-agent medical assistance system that translates complex clinical lab reports (PDF and TXT formats) into clear, compassionate, patient-friendly health guidance. Built with a **Multi-Agent RAG (Retrieval-Augmented Generation)** architecture using **CrewAI**, **ChromaDB**, and **Streamlit**, ClearLab AI empowers patients to understand their lab results without medical jargon while strictly enforcing safety guardrails against rendering automated diagnoses.
+**Health care AI** is an intelligent, multi-agent medical assistance system that translates complex clinical lab reports (PDF and TXT formats) into clear, compassionate, patient-friendly health guidance. Built with a **Multi-Agent RAG (Retrieval-Augmented Generation)** architecture using **CrewAI**, **ChromaDB**, and **Streamlit**, Health care AI empowers patients to understand their lab results without medical jargon while strictly enforcing safety guardrails against rendering automated diagnoses.
 
 ---
 
@@ -10,7 +10,7 @@
 * 📚 **ChromaDB Vector Store RAG Pipeline**: Queries standard medical reference guidelines stored in ChromaDB using local ONNX embeddings (`ONNXMiniLM_L6_V2`) to identify out-of-range lab metrics.
 * 🤖 **4-Agent Sequential CrewAI Orchestration**: Employs four specialized AI agents communicating in a structured pipeline.
 * 🛡️ **Clinical Guardrail & Non-Diagnostic Safety**: Audits output to ensure **NO medical diagnosis is made**, strictly providing educational summaries and recommending direct doctor consultation.
-* 🎨 **Deep-Purple Glassmorphism UI**: High-end Streamlit web dashboard with interactive modal report popups (`st.dialog`).
+* 🎨 **Neon Mint Green & Cyan Gradient UI**: High-end Streamlit web dashboard with glassmorphism aesthetics and interactive modal report popups (`st.dialog`).
 * 📥 **Physician-Grade PDF Report Generator**: Generates formatted, downloadable PDF summaries using ReportLab.
 
 ---
@@ -19,7 +19,7 @@
 
 ```mermaid
 graph TD
-    User([Uploaded Lab Report: PDF / TXT]) --> UI[ClearLab AI Streamlit UI]
+    User([Uploaded Lab Report: PDF / TXT]) --> UI[Health care AI Streamlit UI]
     UI -->|Raw Text| Agent1[1. Lab Data Extraction Agent]
     
     subgraph Multi-Agent RAG Core
@@ -67,7 +67,7 @@ This script embeds `medical_corpus.txt` using `ONNXMiniLM_L6_V2` into a persiste
 
 Our development repository strictly enforces feature branching aligned with university guidelines:
 
-1. `feature/ui-generalization` — Streamlit UI cleanup, rebranding to ClearLab AI, and deep purple glassmorphism styling.
+1. `feature/ui-generalization` — Streamlit UI cleanup, rebranding to Health care AI, and neon mint green/cyan gradient glassmorphism styling.
 2. `feature/file-extraction` — PDF (`pypdf`) and TXT raw text parsing helper functions (`tools.py`).
 3. `feature/rag-knowledge-base` — ChromaDB vector store initialization and reference range ingestion (`rag_setup.py`).
 4. `feature/multi-agent-orchestration` — CrewAI 4-Agent sequential workflow (`agents/` & `crew_logic.py`).
@@ -109,4 +109,4 @@ streamlit run app.py
 ---
 
 ## 🛡️ Medical Disclaimer
-*ClearLab AI is an educational technology demonstration. It provides general educational explanations of medical laboratory reference ranges and does NOT provide medical advice, diagnosis, or treatment. Patients must always consult a qualified healthcare professional regarding any medical condition or lab result.*
+*Health care AI is an educational technology demonstration. It provides general educational explanations of medical laboratory reference ranges and does NOT provide medical advice, diagnosis, or treatment. Patients must always consult a qualified healthcare professional regarding any medical condition or lab result.*
