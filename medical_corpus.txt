@@ -1,22 +1,22 @@
-Guideline 1: Patients with total cholesterol levels above 240 mg/dL are classified as high risk and require immediate medical evaluation.
-Guideline 2: Normal adults should aim to keep their LDL (bad) cholesterol below 100 mg/dL to prevent cardiovascular diseases.
-Guideline 3: A low-fat, high-fiber diet rich in whole grains, vegetables, and omega-3 fatty acids is recommended for cholesterol management.
-Guideline 4: Red yeast rice and plant sterols can naturally help lower LDL cholesterol levels by 10-15%.
-Guideline 5: Patients with high cholesterol should strictly avoid trans fats, hydrogenated oils, and limit saturated fat intake to under 7% of daily calories.
-Guideline 6: Aerobic exercise (such as brisk walking, swimming, or cycling) for 150 minutes per week helps increase HDL (good) cholesterol.
-Guideline 7: Tobacco smoke damages blood vessels and accelerates plaque build-up, significantly increasing risk for patients with elevated cholesterol.
-Guideline 8: Normal resting heart rate for healthy adults ranges from 60 to 100 beats per minute (bpm).
-Guideline 9: Sustained resting heart rates above 100 bpm (tachycardia) or below 60 bpm (bradycardia) should be clinically evaluated.
-Guideline 10: During moderate-intensity exercise, a person's target heart rate should be 50% to 70% of their maximum heart rate.
-Guideline 11: During vigorous physical activity, a person's target heart rate should be 70% to 85% of their maximum heart rate.
-Guideline 12: A maximum heart rate (thalach) during exercise that is abnormally low (below 120 bpm) might suggest chronotropic incompetence.
-Guideline 13: Under physical stress, a healthy heart increases cardiac output; failure to reach 85% of predicted maximum heart rate indicates potential risk.
-Guideline 14: Combined high cholesterol and low exercise heart rate (thalach) significantly compound the risk of coronary artery disease.
-Guideline 15: Patients diagnosed with high risk should monitor their blood pressure daily and maintain it below 130/80 mmHg.
-Guideline 16: Limiting sodium intake to less than 2,300 mg per day (ideally 1,500 mg) helps lower blood pressure and cardiovascular strain.
-Guideline 17: Chronic stress triggers cortisol release, which can raise cholesterol levels and increase resting heart rate.
-Guideline 18: Individuals with a family history of early heart disease should undergo screening starting at age 20.
-Guideline 19: High-dose statin therapy is the primary pharmacological intervention for patients with clinical atherosclerotic cardiovascular disease.
-Guideline 20: Regular diagnostic monitoring via lipid panels and electrocardiograms (ECG) is essential for patients with multiple risk factors.
-Guideline 21: Clinicians should communicate risk assessments with empathy, focusing on actionable lifestyle changes rather than alarmist diagnostics.
-Guideline 22: Hydration plays a key role in cardiovascular efficiency; dehydration can cause temporary increases in heart rate.
+Standard Medical Laboratory Reference Ranges and Guidance Rules:
+
+1. Total Cholesterol: Normal is less than 200 mg/dL. Borderline high is 200 to 239 mg/dL. High cholesterol is 240 mg/dL and above. High cholesterol can lead to plaque buildup in arteries.
+2. LDL Cholesterol (Bad Cholesterol): Optimal is less than 100 mg/dL. Near optimal is 100-129 mg/dL. High LDL is 160 to 189 mg/dL.
+3. HDL Cholesterol (Good Cholesterol): Protective level is 60 mg/dL and above. Low HDL is less than 40 mg/dL for men and less than 50 mg/dL for women.
+4. Triglycerides: Normal is less than 150 mg/dL. Borderline high is 150-199 mg/dL. High is 200 to 499 mg/dL.
+5. Fasting Blood Glucose: Normal fasting level is 70 to 99 mg/dL. Prediabetes is 100 to 125 mg/dL. Diabetes threshold is 126 mg/dL or higher on two separate tests.
+6. Hemoglobin A1c (HbA1c): Normal is below 5.7%. Prediabetes range is 5.7% to 6.4%. Diabetes indicator is 6.5% or higher.
+7. Hemoglobin (CBC): Normal reference range for adult males is 13.8 to 17.2 g/dL. Normal for adult females is 12.1 to 15.1 g/dL. Low hemoglobin indicates potential anemia.
+8. White Blood Cell Count (WBC): Normal reference range is 4500 to 11000 cells/mcL. Elevated WBC (leukocytosis) indicates possible infection, inflammation, or physical stress.
+9. Platelet Count: Normal reference range is 150000 to 450000 platelets/mcL. Low platelets (thrombocytopenia) increases bleeding risk.
+10. Serum Creatinine (Kidney Function): Normal for males is 0.74 to 1.35 mg/dL. Normal for females is 0.59 to 1.04 mg/dL. Elevated creatinine suggests impaired kidney filtration.
+11. Blood Urea Nitrogen (BUN): Normal range is 7 to 20 mg/dL. High BUN indicates reduced renal function or dehydration.
+12. Alanine Aminotransferase (ALT - Liver Function): Normal range is 7 to 56 units per liter (U/L). Elevated ALT suggests liver cell inflammation or stress.
+13. Aspartate Aminotransferase (AST): Normal range is 10 to 40 U/L. Elevated AST indicates liver, heart, or muscle stress.
+14. Thyroid Stimulating Hormone (TSH): Normal range is 0.4 to 4.0 mIU/L. High TSH suggests hypothyroidism (underactive thyroid). Low TSH suggests hyperthyroidism.
+15. Maximum Exercise Heart Rate: Normal target is estimated as 220 minus age. During exercise testing, reaching 70% to 85% of max heart rate is typical. Failing to reach 85% may indicate chronotropic incompetence.
+16. Resting Heart Rate: Normal adult resting heart rate is 60 to 100 beats per minute (bpm). Tachycardia is over 100 bpm resting; bradycardia is below 60 bpm.
+17. Dietary Fiber & Lipid Guidance: Patients with elevated cholesterol should increase soluble fiber intake (oats, legumes, fruit) to reduce cholesterol absorption.
+18. Physical Activity Guidance: Adults are recommended 150 minutes of moderate-intensity aerobic exercise per week.
+19. Sodium Restriction Rule: Individuals with elevated cardiovascular risk or hypertension should limit daily sodium intake to less than 2300 mg per day.
+20. Clinical Non-Diagnostic Rule: All lab explanations provided to patients must be purely educational and non-diagnostic, strictly recommending direct consultation with a qualified primary care physician for clinical diagnosis and treatment planning.
