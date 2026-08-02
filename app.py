@@ -261,7 +261,11 @@ with col_right:
             st.warning("⚠️ Could not extract text from file. Please ensure it is a valid PDF or TXT file.")
 
     st.markdown("<div style='margin-top: 1.2rem;'></div>", unsafe_allow_html=True)
-    run_analysis = st.button("🔍 Analyze Lab Report & Generate Guidance →", key="run_analysis_btn")
+    btn_col1, btn_col2 = st.columns(2)
+    with btn_col1:
+        run_analysis = st.button("🔍 Analyze Lab Report →", key="run_analysis_btn")
+    with btn_col2:
+        reopen_analysis = st.button("📋 View Saved Report", key="reopen_report_btn")
 
     if run_analysis:
         if not extracted_text:
@@ -297,3 +301,10 @@ with col_right:
                     except Exception as e:
                         status.update(label="❌ Analysis Encountered an Error", state="error")
                         st.error(f"An error occurred during agent execution: {str(e)}")
+
+    if reopen_analysis:
+        if st.session_state.get("last_report") is not None:
+            last = st.session_state["last_report"]
+            show_report_modal(last["file_name"], last["report_output"])
+        else:
+            st.info("ℹ️ Please click **'🔍 Analyze Lab Report →'** first to generate your guidance report!")
