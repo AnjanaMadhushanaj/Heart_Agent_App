@@ -5,13 +5,13 @@ from dotenv import load_dotenv
 from pdf_generator import generate_clinical_pdf
 from tools import extract_text_from_file
 
-@st.dialog("🏥 Physician-Grade Health Guidance Assessment", width="large")
-def show_report_modal(report_text_name: str, report_output: str):
+@st.dialog("🏥 Health Guidance Assessment", width="large")
+def show_report_modal(report_text_name: str, report_output: str, language: str):
     """Centered popup modal displaying the structured lab analysis report."""
     st.markdown(f"""
     <div style="background: #ffffff; color: #0f172a; border-radius: 14px; padding: 1.2rem 1.5rem; margin-bottom: 1.2rem; border-left: 6px solid #10b981; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: 800; font-size: 1.2rem; color: #047857;">🏥 Physician-Grade Health Guidance</span>
+            <span style="font-weight: 800; font-size: 1.2rem; color: #047857;">🏥 Physician-Grade Health Guidance ({language})</span>
             <span style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; padding: 0.35rem 0.85rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">
                 Source: {report_text_name}
             </span>
@@ -25,18 +25,18 @@ def show_report_modal(report_text_name: str, report_output: str):
     st.markdown("<hr style='border: none; border-top: 1px solid rgba(255,255,255,0.15); margin: 1.5rem 0 1rem 0;'>", unsafe_allow_html=True)
     
     # Generate & Download PDF Report
-    pdf_bytes = generate_clinical_pdf(0.0, 0.0, "LAB REPORT GUIDANCE", report_output)
+    pdf_bytes = generate_clinical_pdf(0.0, 0.0, f"LAB REPORT GUIDANCE ({language})", report_output)
     st.download_button(
         label="📥 Download Official Assessment Report (PDF)",
         data=pdf_bytes,
-        file_name="Health_care_AI_Patient_Guidance_Report.pdf",
+        file_name=f"Health_care_AI_Guidance_Report_{language.split()[0]}.pdf",
         mime="application/pdf",
         key="modal_pdf_download_btn"
     )
 
 # Page configuration - Health care AI Branding
 st.set_page_config(
-    page_title="Health care AI | General Lab Report Interpreter & Educator",
+    page_title="Health care AI | Universal Multi-Lingual Lab Report Interpreter",
     page_icon="❤️",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -50,14 +50,12 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     
-    /* Main app background - Dark Matte Charcoal with subtle radial glow */
     .stApp {
         background: radial-gradient(circle at 80% 20%, #0f1c18 0%, #090d14 60%, #05080e 100%);
         color: #f8fafc;
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
-    /* Remove default padding & Streamlit header */
     .block-container {
         padding-top: 1.5rem !important;
         padding-bottom: 3rem !important;
@@ -137,16 +135,11 @@ st.markdown("""
         font-weight: 400;
     }
 
-    /* Glass Workspace Card Container */
-    .glass-card {
-        background: rgba(15, 23, 42, 0.75);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(0, 230, 118, 0.25);
-        border-radius: 20px;
-        padding: 2.2rem;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(0, 230, 118, 0.08);
-        margin-bottom: 1.5rem;
+    /* Radio Language Selector Label */
+    div[data-testid="stRadio"] label {
+        color: #00e676 !important;
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
     }
 
     /* File Uploader Label Styling */
@@ -232,12 +225,12 @@ col_left, col_right = st.columns([1.15, 1], gap="large")
 
 with col_left:
     st.markdown("""
-    <div class="hero-pill">⚡ Instant Patient-Friendly Health Intelligence</div>
+    <div class="hero-pill">⚡ Multi-Lingual Patient Health Intelligence</div>
     <div class="hero-title">
-        Understand Your Lab Results in <span class="hero-highlight">Plain English</span>
+        Decode Your Medical <span class="hero-highlight">Lab Reports</span> Instantly
     </div>
     <div class="hero-description">
-        Upload your medical lab report (PDF or TXT) to instantly decode complex clinical findings. Receive physician-grade health summaries, standard reference range analysis, and clear next steps tailored for you and your family.
+        Upload your medical lab report (PDF or TXT) to decode complex clinical findings. Receive physician-grade health guidance and standard reference range analysis translated into <b>English</b>, <b>සිංහල (Sinhala)</b>, or <b>தமிழ் (Tamil)</b>.
     </div>
     """, unsafe_allow_html=True)
 
@@ -260,7 +253,15 @@ with col_right:
         else:
             st.warning("⚠️ Could not extract text from file. Please ensure it is a valid PDF or TXT file.")
 
-    st.markdown("<div style='margin-top: 1.2rem;'></div>", unsafe_allow_html=True)
+    # Multi-Lingual Guidance Language Selector
+    selected_lang = st.radio(
+        "🌐 Select Guidance Language / භාෂාව තෝරන්න / மொழியைத் தேர்ந்தெடுக்கவும்:",
+        ["English", "සිංහල (Sinhala)", "தமிழ் (Tamil)"],
+        horizontal=True,
+        help="Choose the language for your personalized clinical guidance report."
+    )
+
+    st.markdown("<div style='margin-top: 0.8rem;'></div>", unsafe_allow_html=True)
     btn_col1, btn_col2 = st.columns(2)
     with btn_col1:
         run_analysis = st.button("🔍 Analyze Lab Report →", key="run_analysis_btn")
@@ -277,26 +278,27 @@ with col_right:
             if not g_key or g_key == "your_groq_api_key_here" or not or_key or or_key == "your_openrouter_api_key_here":
                 st.error("⚠️ **API Keys Missing!** Please ensure GROQ_API_KEY and OPENROUTER_API_KEY are configured in your `.env` file or Streamlit Secrets.")
             else:
-                with st.status("🧬 Executing 4-Agent RAG Orchestration Flow...", expanded=True) as status:
+                with st.status(f"🧬 Executing 4-Agent RAG Flow ({selected_lang})...", expanded=True) as status:
                     try:
                         status.write("📄 1. Extraction Agent: Extracting raw text from lab report...")
                         status.write("📚 2. Medical Analyzer Agent: Querying ChromaDB reference ranges for out-of-bounds metrics...")
                         from crew_logic import run_lab_analysis
                         
-                        status.write("✍️ 3. Plain-English Translator Agent: Translating medical jargon into patient guidance...")
+                        status.write(f"✍️ 3. Translator Agent: Translating medical jargon into {selected_lang}...")
                         status.write("🛡️ 4. Clinical Guardrail Agent: Auditing report to enforce non-diagnostic safety rules...")
                         
-                        report_output = run_lab_analysis(lab_text=extracted_text)
+                        report_output = run_lab_analysis(lab_text=extracted_text, language=selected_lang)
                         
                         st.session_state["last_report"] = {
                             "file_name": file_name,
-                            "report_output": report_output
+                            "report_output": report_output,
+                            "language": selected_lang
                         }
                         
-                        status.update(label="✅ 4-Agent Analysis Complete! Opening Guidance Modal...", state="complete", expanded=False)
+                        status.update(label=f"✅ 4-Agent Analysis Complete ({selected_lang})! Opening Guidance Modal...", state="complete", expanded=False)
                         
                         # Open centered popup modal
-                        show_report_modal(file_name, report_output)
+                        show_report_modal(file_name, report_output, selected_lang)
                         
                     except Exception as e:
                         status.update(label="❌ Analysis Encountered an Error", state="error")
@@ -305,6 +307,6 @@ with col_right:
     if reopen_analysis:
         if st.session_state.get("last_report") is not None:
             last = st.session_state["last_report"]
-            show_report_modal(last["file_name"], last["report_output"])
+            show_report_modal(last["file_name"], last["report_output"], last.get("language", "English"))
         else:
             st.info("ℹ️ Please click **'🔍 Analyze Lab Report →'** first to generate your guidance report!")
