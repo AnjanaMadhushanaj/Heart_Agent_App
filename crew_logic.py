@@ -75,9 +75,11 @@ clearlab_crew = Crew(
 
 def run_lab_analysis(lab_text: str, language: str = "English") -> str:
     """Executes 4-agent RAG workflow on lab report text input in the chosen language."""
+    # Truncate lab_text if too long to prevent TPM rate limits
+    safe_text = lab_text[:2500] if lab_text else ""
     inputs = {
-        "lab_text": lab_text,
+        "lab_text": safe_text,
         "language": language
     }
     result = clearlab_crew.kickoff(inputs=inputs)
-    return str(result)
+    return str(result.raw) if hasattr(result, 'raw') else str(result)
