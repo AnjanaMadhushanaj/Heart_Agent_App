@@ -92,6 +92,8 @@ graph TD
 
 Agents never pass raw unstructured strings — every hand-off uses explicit task definitions in `crew_logic.py`.
 
+### Key Message Hand-off Sequence
+
 | Sequence | Producer → Consumer | Data Payload & Purpose |
 | :--- | :--- | :--- |
 | **Step 1** | UI → Extraction Agent | Raw lab report text (PDF/TXT) |
@@ -101,6 +103,45 @@ Agents never pass raw unstructured strings — every hand-off uses explicit task
 | **Step 5** | Analyzer Agent → Translator Agent | Identified out-of-bounds parameters & health flags |
 | **Step 6** | Translator Agent → Guardrail Agent | Draft guidance report in target language (EN/SI/TA) |
 | **Step 7** | Guardrail Agent → UI | Audited, compliant educational report |
+
+### Inter-Agent Communication Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Patient/User
+    participant UI as Streamlit UI
+    participant Extractor as Extraction Agent
+    participant Analyzer as Medical Analyzer Agent
+    participant RAG as ChromaDB Vector Store
+    participant Translator as Multi-Lingual Translator
+    participant Guardrail as Safety Guardrail Reviewer
+    participant PDF as ReportLab PDF Engine
+
+    User->>UI: Upload Lab Report (PDF/TXT) & Select Language (EN/SI/TA)
+    UI->>Extractor: Pass Raw Lab Report Content
+    Note over Extractor: Extract measured parameters,<br/>values, and units
+    Extractor-->>UI: Return Structured Parameters
+    
+    UI->>Analyzer: Send Extracted Metrics
+    loop For each parameter
+        Analyzer->>RAG: Query Reference Guidelines
+        RAG-->>Analyzer: Return Standard Reference Ranges
+        Note over Analyzer: Compare values vs guidelines<br/>(Normal / Elevated / Low)
+    end
+    Analyzer-->>UI: Return Anomaly Flags & Findings
+    
+    UI->>Translator: Send Findings + Chosen Language (EN/SI/TA)
+    Note over Translator: Translate clinical jargon<br/>into compassionate guidance
+    Translator-->>Guardrail: Draft Patient Guidance Report
+    
+    Note over Guardrail: Audit output: enforce non-diagnostic<br/>safety & physician disclaimer
+    Guardrail-->>UI: Final Audited Guidance Report
+    
+    UI->>PDF: Generate Clinical Assessment PDF
+    PDF-->>UI: Return Downloadable PDF Bytes
+    UI-->>User: Display Modal Popup + Download PDF Button
+```
 
 ---
 
