@@ -39,13 +39,13 @@ translator_task = Task(
         "- If target language is 'தமிழ் (Tamil)', write the entire response in clear, compassionate, natural Tamil (தமிழ்).\n"
         "- If target language is 'English', write the entire response in clear English.\n\n"
         "Format using clear markdown with the following structure:\n"
-        "### 🏥 Executive Summary / සාරාංශය / විධායක සාරාංශය\n"
+        "### Executive Summary / සාරාංශය\n"
         "A warm, supportive opening summarizing overall lab findings and reassuring the patient.\n\n"
-        "### 📊 Lab Vitals & Reference Analysis / පරීක්ෂණ වාර්තා විශ්ලේෂණය\n"
+        "### Lab Vitals & Reference Analysis / පරීක්ෂණ වාර්තා විශ්ලේෂණය\n"
         "Explain what each measured value means in plain language compared to standard reference ranges.\n\n"
-        "### 💡 Lifestyle & Health Guidance / සෞඛ්‍ය උපදෙස් හා ජීවන රටාව\n"
+        "### Lifestyle & Health Guidance / සෞඛ්‍ය උපදෙස් හා ජීවන රටාව\n"
         "3-4 actionable dietary, exercise, and wellness recommendations based on guidelines.\n\n"
-        "### 🩺 Recommended Next Steps / ඊළඟට ගත යුතු පියවර\n"
+        "### Recommended Next Steps / ඊළඟට ගත යුතු පියවර\n"
         "Encouraging guidance on discussing results with their primary care physician."
     ),
     expected_output="A compassionate, beautifully formatted markdown patient educational report written in the chosen language ({language}).",
@@ -75,7 +75,6 @@ clearlab_crew = Crew(
 
 def run_lab_analysis(lab_text: str, language: str = "English") -> str:
     """Executes 4-agent RAG workflow on lab report text input in the chosen language."""
-    # Truncate lab_text if too long to prevent TPM rate limits
     safe_text = lab_text[:2500] if lab_text else ""
     inputs = {
         "lab_text": safe_text,
