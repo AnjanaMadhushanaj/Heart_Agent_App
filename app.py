@@ -242,8 +242,6 @@ with col_left:
     """, unsafe_allow_html=True)
 
 with col_right:
-    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-    
     # File Uploader for PDF / TXT
     uploaded_file = st.file_uploader(
         "Upload Patient Lab Report (PDF / TXT)",
@@ -264,8 +262,6 @@ with col_right:
 
     st.markdown("<div style='margin-top: 1.2rem;'></div>", unsafe_allow_html=True)
     run_analysis = st.button("🔍 Analyze Lab Report & Generate Guidance →", key="run_analysis_btn")
-    
-    st.markdown('</div>', unsafe_allow_html=True)
 
     if run_analysis:
         if not extracted_text:
