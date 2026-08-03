@@ -1,6 +1,6 @@
 # Health care AI — Multi-Agent RAG Lab Report Interpreter
 
-Health care AI is an assignment-grade multi-agent intelligent system that interprets medical lab reports (PDF and TXT formats) against standard clinical reference guidelines and generates compassionate, patient-friendly guidance in **English**, **සිංහල (Sinhala)**, and **தமிழ் (Tamil)**.
+Health care AI is an assignment-grade multi-agent intelligent system that interprets medical lab reports (PDF, TXT, and Image formats) against standard clinical reference guidelines and generates compassionate, patient-friendly guidance in **English**, **සිංහල (Sinhala)**, and **தமிழ் (Tamil)**.
 
 [Live demo](https://ajrpsmr5lmxcw95mppisvq.streamlit.app/) · [Repository](https://github.com/AnjanaMadhushanaj/Heart_Agent_App) · [Local setup](#setup) · [Deploy checklist](#streamlit-cloud-deploy)
 
@@ -28,16 +28,16 @@ Deployed on Streamlit Community Cloud — see the [Live demo](#live-demo) sectio
 ---
 
 ## What it does
-Health care AI (repo: `Heart_Agent_App`) is an intelligent system designed to bridge the gap between technical clinical lab reports and patient comprehension. When a user uploads a medical laboratory report (such as lipid panels, complete blood count, blood glucose, liver/kidney markers, or thyroid panels), the system extracts measured values, queries verified medical reference ranges in a persistent vector database, translates findings into the user's preferred language, and enforces non-diagnostic clinical safety guardrails.
+Health care AI (repo: `Heart_Agent_App`) is an intelligent system designed to bridge the gap between technical clinical lab reports and patient comprehension. When a user uploads a medical laboratory report (such as lipid panels, complete blood count, blood glucose, liver/kidney markers, or thyroid panels in PDF, TXT, or Image format), the system extracts measured values via OCR/Vision, queries verified medical reference ranges in a persistent vector database, translates findings into the user's preferred language, and enforces non-diagnostic clinical safety guardrails.
 
 ---
 
 ## How it works
-1. **Upload & Extract**: You upload a PDF or TXT lab report in the Streamlit UI.
-2. **Lab Data Extraction**: A specialized Extraction Agent parses raw text, parameter names, numerical values, and units.
-3. **Medical Guidelines RAG Query**: A Pathologist/Analyzer Agent uses a RAG retrieval tool to query ChromaDB for standard clinical reference ranges.
-4. **Multi-Lingual Translation**: A Medical Translator Agent translates out-of-bounds metrics and complex medical jargon into clear, compassionate explanations in **English**, **සිංහල (Sinhala)**, or **தமிழ் (Tamil)**.
-5. **Clinical Guardrail Audit**: A Compliance Reviewer Agent audits the report to strictly enforce that **NO medical diagnosis is rendered** and directs doctor consultation.
+1. **Upload & OCR Extraction**: You upload a PDF, TXT, or Image (PNG/JPG photo) lab report in the Streamlit UI.
+2. **Lab Data Extraction**: A specialized Extraction Agent (powered by Groq Llama 3.3 70B) parses raw text, parameter names, numerical values, and units.
+3. **Medical Guidelines RAG Query**: A Pathologist/Analyzer Agent (powered by OpenRouter Gemma 9B) uses a RAG retrieval tool to query ChromaDB for standard clinical reference ranges.
+4. **Multi-Lingual Translation**: A Medical Translator Agent (powered by Groq Llama 3.3 70B) translates out-of-bounds metrics and complex medical jargon into clear, compassionate explanations in **English**, **සිංහල (Sinhala)**, or **தமிழ் (Tamil)**.
+5. **Clinical Guardrail Audit**: A Compliance Reviewer Agent (powered by OpenRouter Llama 3.1 8B) audits the report to strictly enforce that **NO medical diagnosis is rendered** and directs doctor consultation.
 6. **Interactive Presentation & PDF Export**: The Streamlit UI opens a popup modal with the structured guidance and provides a downloadable physician-grade PDF report.
 
 ---
@@ -59,15 +59,15 @@ End-to-end system view of the 4-agent sequential RAG pipeline:
 
 ```mermaid
 graph TD
-    User([Uploaded Lab Report: PDF / TXT]) --> UI[Streamlit UI Dashboard]
-    UI -->|Language Choice & Text| Agent1[1. Lab Data Extraction Agent]
+    User([Uploaded Lab Report: PDF / TXT / Image]) --> UI[Streamlit UI Dashboard]
+    UI -->|Language Choice & Text/OCR| Agent1[1. Lab Data Extraction Agent - Groq]
     
     subgraph Multi-Agent RAG Core
-        Agent1 -->|Extracted Parameters| Agent2[2. Medical Reference Analyzer Agent]
+        Agent1 -->|Extracted Parameters| Agent2[2. Medical Reference Analyzer Agent - OpenRouter]
         Agent2 -->|ReAct Query| RAG[(ChromaDB Vector Store)]
         RAG -->|Standard Reference Context| Agent2
-        Agent2 -->|Lab Anomalies & Ranges| Agent3[3. Multi-Lingual Translator Agent]
-        Agent3 -->|Draft Guidance: EN / SI / TA| Agent4[4. Clinical Safety Guardrail Agent]
+        Agent2 -->|Lab Anomalies & Ranges| Agent3[3. Multi-Lingual Translator Agent - Groq]
+        Agent3 -->|Draft Guidance: EN / SI / TA| Agent4[4. Clinical Safety Guardrail Agent - OpenRouter]
         Agent4 -->|Audited Educational Report| FinalReport[Final Patient Report]
     end
     
@@ -80,9 +80,9 @@ graph TD
 | Path | Role |
 | :--- | :--- |
 | `app.py` | Streamlit single-page UI dashboard, language selector, modal popup, PDF generator link |
-| `agents/agent_definitions.py` | CrewAI agent definitions (Extraction, Analyzer, Translator, Guardrail) |
+| `agents/agent_definitions.py` | CrewAI agent definitions balancing Groq & OpenRouter workloads |
 | `crew_logic.py` | CrewAI tasks, sequential workflow orchestration, multi-lingual prompt variables |
-| `tools.py` | File text extraction (`pypdf` + TXT helper) |
+| `tools.py` | File text extraction (`pypdf` + TXT + `pytesseract`/`easyocr` Image OCR helper) |
 | `rag_setup.py` | ChromaDB vector store initialization, embeddings, retrieval tool |
 | `medical_corpus.txt` | Ground truth medical reference guidelines corpus with verified clinical citations |
 | `pdf_generator.py` | ReportLab PDF document generator engine |
@@ -97,65 +97,26 @@ Agents never pass raw unstructured strings — every hand-off uses explicit task
 
 | Sequence | Producer → Consumer | Data Payload & Purpose |
 | :--- | :--- | :--- |
-| **Step 1** | UI → Extraction Agent | Raw lab report text (PDF/TXT) |
-| **Step 2** | Extraction Agent → Analyzer Agent | Structured lab parameters, values, and units |
+| **Step 1** | UI → Extraction Agent (Groq) | Raw lab report text or OCR extracted image text |
+| **Step 2** | Extraction Agent → Analyzer Agent (OpenRouter) | Structured lab parameters, values, and units |
 | **Step 3** | Analyzer Agent → RAG Retriever | Search query for standard reference ranges |
 | **Step 4** | RAG Retriever → Analyzer Agent | Verified clinical reference range chunks |
-| **Step 5** | Analyzer Agent → Translator Agent | Identified out-of-bounds parameters & health flags |
-| **Step 6** | Translator Agent → Guardrail Agent | Draft guidance report in target language (EN/SI/TA) |
+| **Step 5** | Analyzer Agent → Translator Agent (Groq) | Identified out-of-bounds parameters & health flags |
+| **Step 6** | Translator Agent → Guardrail Agent (OpenRouter) | Draft guidance report in target language (EN/SI/TA) |
 | **Step 7** | Guardrail Agent → UI | Audited, compliant educational report |
-
-### Inter-Agent Communication Sequence Diagram
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor User as Patient/User
-    participant UI as Streamlit UI
-    participant Extractor as Extraction Agent
-    participant Analyzer as Medical Analyzer Agent
-    participant RAG as ChromaDB Vector Store
-    participant Translator as Multi-Lingual Translator
-    participant Guardrail as Safety Guardrail Reviewer
-    participant PDF as ReportLab PDF Engine
-
-    User->>UI: Upload Lab Report (PDF/TXT) & Select Language (EN/SI/TA)
-    UI->>Extractor: Pass Raw Lab Report Content
-    Note over Extractor: Extract measured parameters,<br/>values, and units
-    Extractor-->>UI: Return Structured Parameters
-    
-    UI->>Analyzer: Send Extracted Metrics
-    loop For each parameter
-        Analyzer->>RAG: Query Reference Guidelines
-        RAG-->>Analyzer: Return Standard Reference Ranges
-        Note over Analyzer: Compare values vs guidelines<br/>(Normal / Elevated / Low)
-    end
-    Analyzer-->>UI: Return Anomaly Flags & Findings
-    
-    UI->>Translator: Send Findings + Chosen Language (EN/SI/TA)
-    Note over Translator: Translate clinical jargon<br/>into compassionate guidance
-    Translator-->>Guardrail: Draft Patient Guidance Report
-    
-    Note over Guardrail: Audit output: enforce non-diagnostic<br/>safety & physician disclaimer
-    Guardrail-->>UI: Final Audited Guidance Report
-    
-    UI->>PDF: Generate Clinical Assessment PDF
-    PDF-->>UI: Return Downloadable PDF Bytes
-    UI-->>User: Display Modal Popup + Download PDF Button
-```
 
 ---
 
 ## Model choice
 
-Default routing targets verified free-tier OpenRouter models for zero rate limit bottlenecks and high token throughput.
+Workload is load-balanced 50-50 across **Groq** and **OpenRouter** to maximize throughput, utilize both API keys, and prevent token rate limits.
 
 | Task / Agent | Model Slug | Provider | Cost | Context Window | Reason for Choice |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Lab Data Extraction** | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | OpenRouter | Free | 128K | Fast, accurate structured data parsing |
-| **Medical Reference Analyzer** | `openrouter/google/gemma-2-9b-it:free` | OpenRouter | Free | 128K | Reliable tool calling for ChromaDB RAG queries |
-| **Multi-Lingual Translator** | `openrouter/google/gemma-2-9b-it:free` | OpenRouter | Free | 128K | Excellent multi-lingual translation in Sinhala & Tamil |
-| **Clinical Safety Guardrail** | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | OpenRouter | Free | 128K | High-precision compliance auditing |
+| **Lab Data Extraction** | `groq/llama-3.3-70b-versatile` | **Groq** | Free | 128K | Ultra-fast clinical data parsing at 500+ tokens/sec |
+| **Medical Reference Analyzer** | `openrouter/google/gemma-2-9b-it:free` | **OpenRouter** | Free | 128K | Reliable ReAct tool calling for ChromaDB RAG queries |
+| **Multi-Lingual Translator** | `groq/llama-3.3-70b-versatile` | **Groq** | Free | 128K | Superior multi-lingual fluency in Sinhala, Tamil, & English |
+| **Clinical Safety Guardrail** | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | **OpenRouter** | Free | 128K | Independent high-precision compliance auditing |
 
 ---
 
@@ -290,7 +251,7 @@ Heart_Agent_App/
 │   ├── __init__.py
 │   └── agent_definitions.py
 ├── crew_logic.py              # Sequential workflow & multi-lingual tasks
-├── tools.py                   # PDF/TXT text extraction tools
+├── tools.py                   # PDF/TXT/Image OCR text extraction tools
 ├── rag_setup.py               # ChromaDB vector store manager
 ├── medical_corpus.txt         # Medical reference guidelines corpus with verified clinical citations
 ├── pdf_generator.py           # ReportLab clinical PDF engine
