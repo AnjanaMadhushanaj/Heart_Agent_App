@@ -19,9 +19,9 @@ groq_llm = LLM(
     api_key=groq_api_key if groq_api_key else openrouter_api_key
 )
 
-# 2. OpenRouter Primary LLM (Gemma 9B for ChromaDB RAG Reasoning)
+# 2. OpenRouter Verified Primary LLM (Meta-Llama 3.1 8B Instruct for ChromaDB RAG Reasoning)
 openrouter_primary = LLM(
-    model=os.getenv("OPENROUTER_MODEL", "openrouter/google/gemma-2-9b-it:free"),
+    model=os.getenv("OPENROUTER_MODEL", "openrouter/meta-llama/llama-3.1-8b-instruct:free"),
     api_key=openrouter_api_key if openrouter_api_key else groq_api_key,
     base_url="https://openrouter.ai/api/v1" if openrouter_api_key else None
 )
@@ -42,7 +42,7 @@ extraction_agent: Agent = Agent(
     verbose=True
 )
 
-# 2. Medical Analyzer Agent (RAG) -> Powered by OpenRouter (Gemma 2 9B for ChromaDB RAG tool execution)
+# 2. Medical Analyzer Agent (RAG) -> Powered by OpenRouter (Llama 3.1 8B for ChromaDB RAG tool execution)
 analyzer_agent: Agent = Agent(
     role="Medical Reference Analyzer",
     goal="Evaluate extracted lab parameters against ChromaDB standard medical reference ranges to identify out-of-range values and health flags.",
