@@ -278,18 +278,11 @@ with col_left:
         Decode Your Medical <span class="hero-highlight">Lab Reports</span> Instantly
     </div>
     <div class="hero-description">
-        Upload your medical lab report (PDF, TXT, or Image) or select a <b>1-Click Demo Sample Report</b> to decode clinical findings. Receive physician-grade guidance translated into <b>English</b>, <b>සිංහල (Sinhala)</b>, or <b>தமிழ் (Tamil)</b>.
+        Upload your medical lab report (PDF, TXT, or Image) to decode complex clinical findings. Receive physician-grade guidance translated into <b>English</b>, <b>සිංහල (Sinhala)</b>, or <b>தமிழ் (Tamil)</b>.
     </div>
     """, unsafe_allow_html=True)
 
 with col_right:
-    # 1-Click Demo Sample Report Dropdown Selection
-    selected_sample = st.selectbox(
-        "Or Select 1-Click Demo Sample Lab Report:",
-        ["-- Upload Own File OR Pick Sample --"] + list(SAMPLE_REPORTS.keys()),
-        help="Select a pre-loaded sample lab report to test the 4-Agent analysis without uploading a file."
-    )
-
     # File Uploader for PDF / TXT / Image (PNG, JPG, JPEG)
     uploaded_file = st.file_uploader(
         "Upload Patient Lab Report (PDF / TXT / Image)",
@@ -300,7 +293,6 @@ with col_right:
     extracted_text = ""
     file_name = "Uploaded File"
 
-    # Prioritize uploaded file if present, else use selected sample demo
     if uploaded_file is not None:
         file_name = uploaded_file.name
         extracted_text = extract_text_from_file(uploaded_file)
@@ -308,10 +300,6 @@ with col_right:
             st.success(f"Report Loaded Successfully! ({len(extracted_text)} characters extracted)")
         else:
             st.warning("Could not extract text from file. Please ensure it is a valid PDF, TXT, or legible Image file.")
-    elif selected_sample != "-- Upload Own File OR Pick Sample --":
-        file_name = selected_sample
-        extracted_text = SAMPLE_REPORTS[selected_sample]
-        st.info(f"Loaded {selected_sample} ({len(extracted_text)} characters)")
 
     # Multi-Lingual Guidance Language Selector
     selected_lang = st.radio(
