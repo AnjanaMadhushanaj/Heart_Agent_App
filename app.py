@@ -25,7 +25,7 @@ def show_report_modal(report_text_name: str, report_output: str, language: str):
     st.markdown("<hr style='border: none; border-top: 1px solid rgba(255,255,255,0.15); margin: 1.5rem 0 1rem 0;'>", unsafe_allow_html=True)
     
     # Generate & Download PDF Report
-    pdf_bytes = generate_clinical_pdf(0.0, 0.0, f"LAB REPORT GUIDANCE ({language})", report_output)
+    pdf_bytes = generate_clinical_pdf(report_text_name, language, report_output)
     st.download_button(
         label="Download Official Assessment Report (PDF)",
         data=pdf_bytes,
