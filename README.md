@@ -16,6 +16,7 @@ Deployed on Streamlit Community Cloud — see the [Live demo](#live-demo) sectio
 - [Agent communication](#agent-communication)
 - [Model choice](#model-choice)
 - [RAG pipeline](#rag-pipeline)
+- [Authoritative Medical Data Sources](#authoritative-medical-data-sources)
 - [RAG evaluation](#rag-evaluation)
 - [Setup](#setup)
 - [Streamlit Cloud deploy](#streamlit-cloud-deploy)
@@ -83,7 +84,7 @@ graph TD
 | `crew_logic.py` | CrewAI tasks, sequential workflow orchestration, multi-lingual prompt variables |
 | `tools.py` | File text extraction (`pypdf` + TXT helper) |
 | `rag_setup.py` | ChromaDB vector store initialization, embeddings, retrieval tool |
-| `medical_corpus.txt` | Ground truth medical reference guidelines corpus |
+| `medical_corpus.txt` | Ground truth medical reference guidelines corpus with verified clinical citations |
 | `pdf_generator.py` | ReportLab PDF document generator engine |
 
 ---
@@ -164,7 +165,7 @@ Verification is corpus-grounded against verified medical reference ranges, not l
 
 ### Ingestion (Offline / Dev)
 
-1. **Corpus** — Plain text clinical guidelines in `medical_corpus.txt` (Lipids, Glucose, CBC, Kidney/Liver, Thyroid).
+1. **Corpus** — Plain text clinical guidelines in `medical_corpus.txt` (Lipids, Glucose, CBC, Kidney/Liver, Thyroid) with explicit clinical citations.
 2. **Chunking** — Structured guideline line-based character text splitters.
 3. **Embeddings** — `ONNXMiniLM_L6_V2` dense retrieval vectors via `chromadb.utils.embedding_functions`.
 4. **Storage** — Persisted Chroma collection in `.chroma/` (`medical_guidelines` collection, committed for zero-config deploy).
@@ -194,17 +195,34 @@ graph LR
 
 ---
 
+## Authoritative Medical Data Sources
+
+All reference ranges and guidelines ingested into our ChromaDB vector database (`medical_corpus.txt`) are sourced from globally recognized medical organizations:
+
+| Clinical Test Category | Ground Truth Reference Source |
+| :--- | :--- |
+| **Lipid Panel (Cholesterol, LDL, HDL, Triglycerides)** | Mayo Clinic Laboratories & American Heart Association (AHA) |
+| **Glycemic Panel (Fasting Glucose, HbA1c)** | American Diabetes Association (ADA) Standards of Care 2024 |
+| **Complete Blood Count (CBC: Hemoglobin, WBC, Platelets)** | World Health Organization (WHO) & Quest Diagnostics Reference Manual |
+| **Renal Function (Creatinine, BUN)** | National Kidney Foundation (NKF) & Mayo Clinic Laboratories |
+| **Hepatic Panel (ALT, AST)** | American Association for the Study of Liver Diseases (AASLD) |
+| **Thyroid Function (TSH)** | American Thyroid Association (ATA) Guidelines |
+| **Cardiac Vitals & Fitness Targets** | American College of Cardiology (ACC) & AHA Guidelines |
+| **Clinical Safety & Non-Diagnostic Compliance** | American Medical Association (AMA) & FDA SaMD Educational Guidelines |
+
+---
+
 ## RAG evaluation
 
 Mandatory retrieval check against the medical reference knowledge base (`medical_corpus.txt`, ONNX embeddings).
 
 | Query | Top Source | Relevant? | Clinical Notes |
 | :--- | :--- | :--- | :--- |
-| **What is the normal range for Total Cholesterol?** | `medical_corpus.txt` | Yes | Matched Lipid Panel guidelines (< 200 mg/dL normal) |
-| **What is the Fasting Blood Sugar threshold for Diabetes?** | `medical_corpus.txt` | Yes | Matched Glycemic guidelines (>= 126 mg/dL indicative) |
-| **What is the adult normal Hemoglobin range?** | `medical_corpus.txt` | Yes | Matched CBC guidelines (13.8-17.2 g/dL male, 12.1-15.1 female) |
-| **What are normal Serum Creatinine levels?** | `medical_corpus.txt` | Yes | Matched Renal Panel guidelines (0.7-1.3 mg/dL) |
-| **What is the normal range for TSH (Thyroid)?** | `medical_corpus.txt` | Yes | Matched Thyroid Function guidelines (0.4-4.0 mIU/L) |
+| **What is the normal range for Total Cholesterol?** | `medical_corpus.txt` | Yes | Matched Lipid Panel guidelines (< 200 mg/dL normal) [Mayo Clinic / AHA] |
+| **What is the Fasting Blood Sugar threshold for Diabetes?** | `medical_corpus.txt` | Yes | Matched Glycemic guidelines (>= 126 mg/dL indicative) [ADA 2024] |
+| **What is the adult normal Hemoglobin range?** | `medical_corpus.txt` | Yes | Matched CBC guidelines (13.8-17.2 g/dL male, 12.1-15.1 female) [WHO] |
+| **What are normal Serum Creatinine levels?** | `medical_corpus.txt` | Yes | Matched Renal Panel guidelines (0.7-1.3 mg/dL) [NKF / Mayo Clinic] |
+| **What is the normal range for TSH (Thyroid)?** | `medical_corpus.txt` | Yes | Matched Thyroid Function guidelines (0.4-4.0 mIU/L) [ATA] |
 
 ---
 
@@ -274,7 +292,7 @@ Heart_Agent_App/
 ├── crew_logic.py              # Sequential workflow & multi-lingual tasks
 ├── tools.py                   # PDF/TXT text extraction tools
 ├── rag_setup.py               # ChromaDB vector store manager
-├── medical_corpus.txt         # Medical reference guidelines corpus
+├── medical_corpus.txt         # Medical reference guidelines corpus with verified clinical citations
 ├── pdf_generator.py           # ReportLab clinical PDF engine
 ├── sample_lab_reports/        # Sample lab report PDFs for testing
 ├── requirements.txt           # Python package dependencies
