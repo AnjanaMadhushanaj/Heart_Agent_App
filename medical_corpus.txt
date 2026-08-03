@@ -1,22 +1,22 @@
-Standard Medical Laboratory Reference Ranges and Guidance Rules:
+# Verified Clinical Reference Guidelines & Authoritative Sources
 
-1. Total Cholesterol: Normal is less than 200 mg/dL. Borderline high is 200 to 239 mg/dL. High cholesterol is 240 mg/dL and above. High cholesterol can lead to plaque buildup in arteries.
-2. LDL Cholesterol (Bad Cholesterol): Optimal is less than 100 mg/dL. Near optimal is 100-129 mg/dL. High LDL is 160 to 189 mg/dL.
-3. HDL Cholesterol (Good Cholesterol): Protective level is 60 mg/dL and above. Low HDL is less than 40 mg/dL for men and less than 50 mg/dL for women.
-4. Triglycerides: Normal is less than 150 mg/dL. Borderline high is 150-199 mg/dL. High is 200 to 499 mg/dL.
-5. Fasting Blood Glucose: Normal fasting level is 70 to 99 mg/dL. Prediabetes is 100 to 125 mg/dL. Diabetes threshold is 126 mg/dL or higher on two separate tests.
-6. Hemoglobin A1c (HbA1c): Normal is below 5.7%. Prediabetes range is 5.7% to 6.4%. Diabetes indicator is 6.5% or higher.
-7. Hemoglobin (CBC): Normal reference range for adult males is 13.8 to 17.2 g/dL. Normal for adult females is 12.1 to 15.1 g/dL. Low hemoglobin indicates potential anemia.
-8. White Blood Cell Count (WBC): Normal reference range is 4500 to 11000 cells/mcL. Elevated WBC (leukocytosis) indicates possible infection, inflammation, or physical stress.
-9. Platelet Count: Normal reference range is 150000 to 450000 platelets/mcL. Low platelets (thrombocytopenia) increases bleeding risk.
-10. Serum Creatinine (Kidney Function): Normal for males is 0.74 to 1.35 mg/dL. Normal for females is 0.59 to 1.04 mg/dL. Elevated creatinine suggests impaired kidney filtration.
-11. Blood Urea Nitrogen (BUN): Normal range is 7 to 20 mg/dL. High BUN indicates reduced renal function or dehydration.
-12. Alanine Aminotransferase (ALT - Liver Function): Normal range is 7 to 56 units per liter (U/L). Elevated ALT suggests liver cell inflammation or stress.
-13. Aspartate Aminotransferase (AST): Normal range is 10 to 40 U/L. Elevated AST indicates liver, heart, or muscle stress.
-14. Thyroid Stimulating Hormone (TSH): Normal range is 0.4 to 4.0 mIU/L. High TSH suggests hypothyroidism (underactive thyroid). Low TSH suggests hyperthyroidism.
-15. Maximum Exercise Heart Rate: Normal target is estimated as 220 minus age. During exercise testing, reaching 70% to 85% of max heart rate is typical. Failing to reach 85% may indicate chronotropic incompetence.
-16. Resting Heart Rate: Normal adult resting heart rate is 60 to 100 beats per minute (bpm). Tachycardia is over 100 bpm resting; bradycardia is below 60 bpm.
-17. Dietary Fiber & Lipid Guidance: Patients with elevated cholesterol should increase soluble fiber intake (oats, legumes, fruit) to reduce cholesterol absorption.
-18. Physical Activity Guidance: Adults are recommended 150 minutes of moderate-intensity aerobic exercise per week.
-19. Sodium Restriction Rule: Individuals with elevated cardiovascular risk or hypertension should limit daily sodium intake to less than 2300 mg per day.
-20. Clinical Non-Diagnostic Rule: All lab explanations provided to patients must be purely educational and non-diagnostic, strictly recommending direct consultation with a qualified primary care physician for clinical diagnosis and treatment planning.
+1. Total Cholesterol (Lipid Panel): Normal reference level is less than 200 mg/dL. Borderline high is 200 to 239 mg/dL. High cholesterol is 240 mg/dL and above. High cholesterol can lead to arterial plaque buildup and cardiovascular risk. [Source: Mayo Clinic Laboratories & American Heart Association (AHA) Clinical Guidelines]
+2. LDL Cholesterol (Bad Cholesterol): Optimal level is less than 100 mg/dL. Near optimal is 100 to 129 mg/dL. High LDL is 160 to 189 mg/dL. Very high is 190 mg/dL and above. [Source: American College of Cardiology (ACC) / AHA Cholesterol Guidelines]
+3. HDL Cholesterol (Good Cholesterol): Protective level is 60 mg/dL and above. Low HDL is less than 40 mg/dL for men and less than 50 mg/dL for women. Higher HDL helps remove LDL from arteries. [Source: Mayo Clinic & National Institutes of Health (NIH)]
+4. Triglycerides: Normal fasting level is less than 150 mg/dL. Borderline high is 150 to 199 mg/dL. High is 200 to 499 mg/dL. Very high is 500 mg/dL and above. [Source: American Heart Association (AHA)]
+5. Fasting Blood Glucose (Glycemic Panel): Normal fasting blood sugar is 70 to 99 mg/dL. Prediabetes threshold is 100 to 125 mg/dL. Diabetes diagnosis threshold is 126 mg/dL or higher on two separate tests. [Source: American Diabetes Association (ADA) Standards of Care 2024]
+6. Hemoglobin A1c (HbA1c): Normal level is below 5.7%. Prediabetes range is 5.7% to 6.4%. Diabetes diagnostic indicator is 6.5% or higher. Reflects average blood sugar over the past 3 months. [Source: American Diabetes Association (ADA) & NIH NIDDK]
+7. Hemoglobin (Complete Blood Count): Normal reference range for adult males is 13.8 to 17.2 g/dL. Normal range for adult females is 12.1 to 15.1 g/dL. Low hemoglobin indicates potential anemia or iron deficiency. [Source: World Health Organization (WHO) & Mayo Clinic Laboratories]
+8. White Blood Cell Count (WBC): Normal reference range is 4,500 to 11,000 cells/mcL (4.5 to 11.0 x10^9/L). Elevated WBC (leukocytosis) indicates infection, inflammation, or physiological stress. Low WBC (leukopenia) indicates immunosuppression. [Source: World Health Organization (WHO) & Quest Diagnostics Reference Manual]
+9. Platelet Count: Normal reference range is 150,000 to 450,000 platelets/mcL. Low platelets (thrombocytopenia) increase bleeding risk; high platelets (thrombocytosis) increase clotting risk. [Source: National Heart, Lung, and Blood Institute (NHLBI)]
+10. Serum Creatinine (Renal Function): Normal reference range for adult males is 0.74 to 1.35 mg/dL. Normal range for adult females is 0.59 to 1.04 mg/dL. Elevated creatinine suggests reduced kidney glomerular filtration rate. [Source: National Kidney Foundation (NKF) & Mayo Clinic Laboratories]
+11. Blood Urea Nitrogen (BUN): Normal reference range is 7 to 20 mg/dL. Elevated BUN indicates reduced renal clearance, high protein intake, or dehydration. [Source: National Kidney Foundation (NKF)]
+12. Alanine Aminotransferase (ALT - Hepatic Panel): Normal reference range is 7 to 56 units per liter (U/L). Elevated ALT is a sensitive marker of liver cell inflammation or hepatic stress. [Source: American Association for the Study of Liver Diseases (AASLD)]
+13. Aspartate Aminotransferase (AST): Normal reference range is 10 to 40 U/L. Elevated AST indicates liver, cardiac, or skeletal muscle tissue stress. [Source: American Association for the Study of Liver Diseases (AASLD)]
+14. Thyroid Stimulating Hormone (TSH): Normal reference range is 0.4 to 4.0 mIU/L. Elevated TSH suggests hypothyroidism (underactive thyroid). Suppressed TSH suggests hyperthyroidism (overactive thyroid). [Source: American Thyroid Association (ATA) Guidelines]
+15. Maximum Exercise Heart Rate: Target maximum heart rate is estimated as 220 minus age. Achieving 70% to 85% of maximum heart rate during aerobic exercise is recommended for cardiovascular conditioning. [Source: American Heart Association (AHA)]
+16. Resting Heart Rate: Normal adult resting heart rate is 60 to 100 beats per minute (bpm). Resting rate above 100 bpm indicates tachycardia; below 60 bpm indicates bradycardia. [Source: American College of Cardiology (ACC)]
+17. Dietary Fiber & Lipid Guidance: Increasing daily soluble fiber (oats, legumes, pectin) to 10-25 grams per day actively reduces intestinal LDL cholesterol absorption. [Source: National Cholesterol Education Program (NCEP) & Mayo Clinic]
+18. Physical Activity Recommendations: Adults should aim for at least 150 minutes of moderate-intensity aerobic exercise per week combined with muscle-strengthening activities. [Source: World Health Organization (WHO) & CDC Physical Activity Guidelines]
+19. Sodium Restriction Rule: Individuals with elevated cardiovascular risk, hypertension, or renal concerns should restrict daily sodium intake to less than 2,300 mg per day (ideally 1,500 mg). [Source: American Heart Association (AHA) & WHO Guidelines]
+20. Clinical Non-Diagnostic Compliance Rule: All lab report explanations and health guidance must be strictly educational and non-diagnostic, explicitly advising the patient to consult a licensed primary care physician for medical diagnosis and clinical care planning. [Source: AMA & FDA Software as a Medical Device (SaMD) Educational Guidelines]
