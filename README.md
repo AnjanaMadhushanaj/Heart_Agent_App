@@ -35,7 +35,7 @@ Health care AI (repo: `Heart_Agent_App`) is an intelligent system designed to br
 ## How it works
 1. **Upload & OCR Extraction**: You upload a PDF, TXT, or Image (PNG/JPG photo) lab report in the Streamlit UI.
 2. **Lab Data Extraction**: A specialized Extraction Agent (powered by Groq Llama 3.3 70B) parses raw text, parameter names, numerical values, and units.
-3. **Medical Guidelines RAG Query**: A Pathologist/Analyzer Agent (powered by OpenRouter Gemma 9B) uses a RAG retrieval tool to query ChromaDB for standard clinical reference ranges.
+3. **Medical Guidelines RAG Query**: A Pathologist/Analyzer Agent (powered by OpenRouter Llama 3.1 8B) uses a RAG retrieval tool to query ChromaDB for standard clinical reference ranges.
 4. **Multi-Lingual Translation**: A Medical Translator Agent (powered by Groq Llama 3.3 70B) translates out-of-bounds metrics and complex medical jargon into clear, compassionate explanations in **English**, **සිංහල (Sinhala)**, or **தமிழ் (Tamil)**.
 5. **Clinical Guardrail Audit**: A Compliance Reviewer Agent (powered by OpenRouter Llama 3.1 8B) audits the report to strictly enforce that **NO medical diagnosis is rendered** and directs doctor consultation.
 6. **Interactive Presentation & PDF Export**: The Streamlit UI opens a popup modal with the structured guidance and provides a downloadable physician-grade PDF report.
@@ -109,12 +109,12 @@ Agents never pass raw unstructured strings — every hand-off uses explicit task
 
 ## Model choice
 
-Workload is load-balanced 50-50 across **Groq** and **OpenRouter** to maximize throughput, utilize both API keys, and prevent token rate limits.
+Workload is load-balanced 50-50 across **Groq** and **OpenRouter** using verified 100% active models to maximize throughput and prevent 404 or token rate limit errors.
 
 | Task / Agent | Model Slug | Provider | Cost | Context Window | Reason for Choice |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Lab Data Extraction** | `groq/llama-3.3-70b-versatile` | **Groq** | Free | 128K | Ultra-fast clinical data parsing at 500+ tokens/sec |
-| **Medical Reference Analyzer** | `openrouter/google/gemma-2-9b-it:free` | **OpenRouter** | Free | 128K | Reliable ReAct tool calling for ChromaDB RAG queries |
+| **Medical Reference Analyzer** | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | **OpenRouter** | Free | 128K | Reliable ReAct tool calling for ChromaDB RAG queries |
 | **Multi-Lingual Translator** | `groq/llama-3.3-70b-versatile` | **Groq** | Free | 128K | Superior multi-lingual fluency in Sinhala, Tamil, & English |
 | **Clinical Safety Guardrail** | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | **OpenRouter** | Free | 128K | Independent high-precision compliance auditing |
 
