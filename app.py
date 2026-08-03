@@ -5,6 +5,47 @@ from dotenv import load_dotenv
 from pdf_generator import generate_clinical_pdf
 from tools import extract_text_from_file
 
+# Sample Demo Reports for 1-Click Evaluation
+SAMPLE_REPORTS = {
+    "Sample 1: Lipid Panel & Cholesterol Test": """PATIENT LAB REPORT: LIPID PANEL ASSESSMENT
+Patient Name: Yash Vardhan
+Age: 42 | Gender: Male | Date: 2026-08-03
+
+LABORATORY RESULTS:
+- Total Cholesterol: 250 mg/dL (High)
+- Triglycerides: 190 mg/dL (Borderline High)
+- HDL Cholesterol: 38 mg/dL (Low for men)
+- LDL Cholesterol: 165 mg/dL (High)
+""",
+    "Sample 2: Glycemic & Blood Glucose Panel": """PATIENT LAB REPORT: GLYCEMIC ASSESSMENT
+Patient Name: Nimal Perera
+Age: 51 | Gender: Male | Date: 2026-08-03
+
+LABORATORY RESULTS:
+- Fasting Blood Sugar (FBS): 135 mg/dL (Elevated - Diabetes Threshold)
+- Hemoglobin A1c (HbA1c): 6.8% (Elevated - Diabetic Indicator)
+""",
+    "Sample 3: Complete Blood Count (CBC) Panel": """PATIENT LAB REPORT: COMPLETE BLOOD COUNT
+Patient Name: Kamala Silva
+Age: 35 | Gender: Female | Date: 2026-08-03
+
+LABORATORY RESULTS:
+- Hemoglobin: 10.5 g/dL (Low - Anemia Indicator)
+- White Blood Cell (WBC): 12,500 cells/mcL (Elevated Leukocytosis)
+- Platelet Count: 280,000 platelets/mcL (Normal Range)
+""",
+    "Sample 4: Kidney & Liver Function Panel": """PATIENT LAB REPORT: RENAL & HEPATIC PANEL
+Patient Name: Sunethra Jayasinghe
+Age: 58 | Gender: Female | Date: 2026-08-03
+
+LABORATORY RESULTS:
+- Serum Creatinine: 1.65 mg/dL (Elevated Renal Filtration Marker)
+- Blood Urea Nitrogen (BUN): 28 mg/dL (Elevated)
+- ALT (SGPT): 65 U/L (Elevated Liver Marker)
+- AST (SGOT): 48 U/L (Slightly Elevated)
+"""
+}
+
 @st.dialog("Health Guidance Assessment", width="large")
 def show_report_modal(report_text_name: str, report_output: str, language: str):
     """Centered popup modal displaying the structured lab analysis report."""
@@ -142,6 +183,13 @@ st.markdown("""
         font-size: 0.95rem !important;
     }
 
+    /* Selectbox Styling */
+    div[data-testid="stSelectbox"] label {
+        color: #00e676 !important;
+        font-weight: 700 !important;
+        font-size: 0.9rem !important;
+    }
+
     /* File Uploader Label Styling */
     .stFileUploader label {
         color: #f8fafc !important;
@@ -230,11 +278,18 @@ with col_left:
         Decode Your Medical <span class="hero-highlight">Lab Reports</span> Instantly
     </div>
     <div class="hero-description">
-        Upload your medical lab report (PDF or TXT) to decode complex clinical findings. Receive physician-grade health guidance and standard reference range analysis translated into <b>English</b>, <b>සිංහල (Sinhala)</b>, or <b>தமிழ் (Tamil)</b>.
+        Upload your medical lab report (PDF, TXT, or Image) or select a <b>1-Click Demo Sample Report</b> to decode clinical findings. Receive physician-grade guidance translated into <b>English</b>, <b>සිංහල (Sinhala)</b>, or <b>தமிழ் (Tamil)</b>.
     </div>
     """, unsafe_allow_html=True)
 
 with col_right:
+    # 1-Click Demo Sample Report Dropdown Selection
+    selected_sample = st.selectbox(
+        "Or Select 1-Click Demo Sample Lab Report:",
+        ["-- Upload Own File OR Pick Sample --"] + list(SAMPLE_REPORTS.keys()),
+        help="Select a pre-loaded sample lab report to test the 4-Agent analysis without uploading a file."
+    )
+
     # File Uploader for PDF / TXT / Image (PNG, JPG, JPEG)
     uploaded_file = st.file_uploader(
         "Upload Patient Lab Report (PDF / TXT / Image)",
@@ -245,6 +300,7 @@ with col_right:
     extracted_text = ""
     file_name = "Uploaded File"
 
+    # Prioritize uploaded file if present, else use selected sample demo
     if uploaded_file is not None:
         file_name = uploaded_file.name
         extracted_text = extract_text_from_file(uploaded_file)
@@ -252,6 +308,10 @@ with col_right:
             st.success(f"Report Loaded Successfully! ({len(extracted_text)} characters extracted)")
         else:
             st.warning("Could not extract text from file. Please ensure it is a valid PDF, TXT, or legible Image file.")
+    elif selected_sample != "-- Upload Own File OR Pick Sample --":
+        file_name = selected_sample
+        extracted_text = SAMPLE_REPORTS[selected_sample]
+        st.info(f"Loaded {selected_sample} ({len(extracted_text)} characters)")
 
     # Multi-Lingual Guidance Language Selector
     selected_lang = st.radio(
@@ -270,7 +330,7 @@ with col_right:
 
     if run_analysis:
         if not extracted_text:
-            st.error("No Lab Report Uploaded! Please upload a PDF or TXT lab report file first.")
+            st.error("No Lab Report Loaded! Please upload a file OR select a 1-Click Demo Sample Report above.")
         else:
             g_key = os.environ.get("GROQ_API_KEY", "")
             or_key = os.environ.get("OPENROUTER_API_KEY", "")
