@@ -239,6 +239,8 @@ Checklist to satisfy live-demo deployment requirements:
 ## Live demo
 - **Live Demo App**: [https://ajrpsmr5lmxcw95mppisvq.streamlit.app/](https://ajrpsmr5lmxcw95mppisvq.streamlit.app/)
 - **Repository**: [https://github.com/AnjanaMadhushanaj/Heart_Agent_App](https://github.com/AnjanaMadhushanaj/Heart_Agent_App)
+- **Demo Video**: https://github.com/user-attachments/assets/6207d4fc-1d3d-4e81-85e3-f02248fb6640
+
 
 ---
 
