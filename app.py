@@ -235,11 +235,11 @@ with col_left:
     """, unsafe_allow_html=True)
 
 with col_right:
-    # File Uploader for PDF / TXT
+    # File Uploader for PDF / TXT / Image (PNG, JPG, JPEG)
     uploaded_file = st.file_uploader(
-        "Upload Patient Lab Report (PDF / TXT)",
-        type=["pdf", "txt"],
-        help="Upload a PDF or TXT lab report file to extract and interpret findings."
+        "Upload Patient Lab Report (PDF / TXT / Image)",
+        type=["pdf", "txt", "png", "jpg", "jpeg"],
+        help="Upload a PDF, TXT, or Image (PNG/JPG) lab report photo to extract and interpret findings via OCR."
     )
 
     extracted_text = ""
@@ -251,7 +251,7 @@ with col_right:
         if extracted_text and not extracted_text.startswith("Error"):
             st.success(f"Report Loaded Successfully! ({len(extracted_text)} characters extracted)")
         else:
-            st.warning("Could not extract text from file. Please ensure it is a valid PDF or TXT file.")
+            st.warning("Could not extract text from file. Please ensure it is a valid PDF, TXT, or legible Image file.")
 
     # Multi-Lingual Guidance Language Selector
     selected_lang = st.radio(
