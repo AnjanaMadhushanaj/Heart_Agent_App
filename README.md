@@ -34,10 +34,10 @@ Health care AI (repo: `Heart_Agent_App`) is an intelligent system designed to br
 
 ## How it works
 1. **Upload & OCR Extraction**: You upload a PDF, TXT, or Image (PNG/JPG photo) lab report in the Streamlit UI.
-2. **Lab Data Extraction**: A specialized Extraction Agent (powered by Groq Llama 3.3 70B) parses raw text, parameter names, numerical values, and units.
-3. **Medical Guidelines RAG Query**: A Pathologist/Analyzer Agent (powered by OpenRouter Llama 3.1 8B) uses a RAG retrieval tool to query ChromaDB for standard clinical reference ranges.
+2. **Lab Data Extraction**: A specialized Extraction Agent (powered by Groq Llama 3.1 8B) parses raw text, parameter names, numerical values, and units.
+3. **Medical Guidelines RAG Query**: A Pathologist/Analyzer Agent (powered by Groq Llama 3.3 70B) uses a RAG retrieval tool to query ChromaDB for standard clinical reference ranges.
 4. **Multi-Lingual Translation**: A Medical Translator Agent (powered by Groq Llama 3.3 70B) translates out-of-bounds metrics and complex medical jargon into clear, compassionate explanations in **English**, **සිංහල (Sinhala)**, or **தமிழ் (Tamil)**.
-5. **Clinical Guardrail Audit**: A Compliance Reviewer Agent (powered by OpenRouter Llama 3.1 8B) audits the report to strictly enforce that **NO medical diagnosis is rendered** and directs doctor consultation.
+5. **Clinical Guardrail Audit**: A Compliance Reviewer Agent (powered by Groq Llama 3.1 8B) audits the report to strictly enforce that **NO medical diagnosis is rendered** and directs doctor consultation.
 6. **Interactive Presentation & PDF Export**: The Streamlit UI opens a popup modal with the structured guidance and provides a downloadable physician-grade PDF report.
 
 ---
@@ -63,11 +63,11 @@ graph TD
     UI -->|Language Choice & Text/OCR| Agent1[1. Lab Data Extraction Agent - Groq]
     
     subgraph Multi-Agent RAG Core
-        Agent1 -->|Extracted Parameters| Agent2[2. Medical Reference Analyzer Agent - OpenRouter]
+        Agent1 -->|Extracted Parameters| Agent2[2. Medical Reference Analyzer Agent - Groq / ChromaDB]
         Agent2 -->|ReAct Query| RAG[(ChromaDB Vector Store)]
         RAG -->|Standard Reference Context| Agent2
         Agent2 -->|Lab Anomalies & Ranges| Agent3[3. Multi-Lingual Translator Agent - Groq]
-        Agent3 -->|Draft Guidance: EN / SI / TA| Agent4[4. Clinical Safety Guardrail Agent - OpenRouter]
+        Agent3 -->|Draft Guidance: EN / SI / TA| Agent4[4. Clinical Safety Guardrail Agent - OpenRouter Auto]
         Agent4 -->|Audited Educational Report| FinalReport[Final Patient Report]
     end
     
@@ -80,7 +80,7 @@ graph TD
 | Path | Role |
 | :--- | :--- |
 | `app.py` | Streamlit single-page UI dashboard, language selector, modal popup, PDF generator link |
-| `agents/agent_definitions.py` | CrewAI agent definitions balancing Groq & OpenRouter workloads |
+| `agents/agent_definitions.py` | CrewAI agent definitions balancing Groq & OpenRouter Auto-routing workloads |
 | `crew_logic.py` | CrewAI tasks, sequential workflow orchestration, multi-lingual prompt variables |
 | `tools.py` | File text extraction (`pypdf` + TXT + `pytesseract`/`easyocr` Image OCR helper) |
 | `rag_setup.py` | ChromaDB vector store initialization, embeddings, retrieval tool |
@@ -98,7 +98,7 @@ Agents never pass raw unstructured strings — every hand-off uses explicit task
 | Sequence | Producer → Consumer | Data Payload & Purpose |
 | :--- | :--- | :--- |
 | **Step 1** | UI → Extraction Agent (Groq) | Raw lab report text or OCR extracted image text |
-| **Step 2** | Extraction Agent → Analyzer Agent (OpenRouter) | Structured lab parameters, values, and units |
+| **Step 2** | Extraction Agent → Analyzer Agent (Groq) | Structured lab parameters, values, and units |
 | **Step 3** | Analyzer Agent → RAG Retriever | Search query for standard reference ranges |
 | **Step 4** | RAG Retriever → Analyzer Agent | Verified clinical reference range chunks |
 | **Step 5** | Analyzer Agent → Translator Agent (Groq) | Identified out-of-bounds parameters & health flags |
@@ -109,14 +109,14 @@ Agents never pass raw unstructured strings — every hand-off uses explicit task
 
 ## Model choice
 
-Workload is load-balanced 50-50 across **Groq** and **OpenRouter** using verified 100% active models to maximize throughput and prevent 404 or token rate limit errors.
+Workload prioritizes official **Groq API** models (`groq/llama-3.3-70b-versatile` & `groq/llama-3.1-8b-instant`) with automatic failover to **OpenRouter Auto (`openrouter/auto`)** to completely eliminate 404 model errors and token rate limit bottlenecks.
 
 | Task / Agent | Model Slug | Provider | Cost | Context Window | Reason for Choice |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Lab Data Extraction** | `groq/llama-3.3-70b-versatile` | **Groq** | Free | 128K | Ultra-fast clinical data parsing at 500+ tokens/sec |
-| **Medical Reference Analyzer** | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | **OpenRouter** | Free | 128K | Reliable ReAct tool calling for ChromaDB RAG queries |
-| **Multi-Lingual Translator** | `groq/llama-3.3-70b-versatile` | **Groq** | Free | 128K | Superior multi-lingual fluency in Sinhala, Tamil, & English |
-| **Clinical Safety Guardrail** | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | **OpenRouter** | Free | 128K | Independent high-precision compliance auditing |
+| **Lab Data Extraction** | `groq/llama-3.1-8b-instant` | **Groq / OpenRouter Auto** | Free | 128K | High-speed clinical data parsing at 500+ tokens/sec |
+| **Medical Reference Analyzer** | `groq/llama-3.3-70b-versatile` | **Groq / OpenRouter Auto** | Free | 128K | Reliable ReAct tool calling for ChromaDB RAG queries |
+| **Multi-Lingual Translator** | `groq/llama-3.3-70b-versatile` | **Groq / OpenRouter Auto** | Free | 128K | Superior multi-lingual fluency in Sinhala, Tamil, & English |
+| **Clinical Safety Guardrail** | `groq/llama-3.1-8b-instant` | **Groq / OpenRouter Auto** | Free | 128K | Independent high-precision compliance auditing |
 
 ---
 
